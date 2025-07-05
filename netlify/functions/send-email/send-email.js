@@ -1,11 +1,11 @@
-// Use Netlify's built-in email capability (no nodemailer needed)
 exports.handler = async (event) => {
   try {
     const { to, formData } = JSON.parse(event.body);
     
+    // Updated to use NETLIFY_EMAIL_TOKEN
     await require('netlify-lambda').sendEmail({
       from: process.env.NETLIFY_EMAIL_USER,
-      to,
+      to: to,
       subject: "New Form Submission",
       text: `Form data:\n${JSON.stringify(formData, null, 2)}`
     });
