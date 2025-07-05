@@ -779,10 +779,26 @@
         });
 
         // File upload functionality
-        const fileUploadArea = document.getElementById('fileUploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileList = document.getElementById('fileList');
-        let uploadedFiles = [];
+        // File upload functionality - UPDATED VERSION
+const fileUploadArea = document.getElementById('fileUploadArea');
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+let uploadedFiles = [];
+
+// Fix for double-click issue
+fileInput.addEventListener('click', function(e) {
+    e.stopPropagation(); // Prevent event bubbling
+});
+
+fileUploadArea.addEventListener('click', function() {
+    // Only trigger if not processing a drop event
+    if (!fileUploadArea.classList.contains('dragover')) {
+        fileInput.click();
+    }
+});
+
+// Set today's date as default
+document.getElementById('date').valueAsDate = new Date();
 
         // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();
