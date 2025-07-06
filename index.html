@@ -166,32 +166,52 @@
             min-height: 48px;
         }
 
-        /* ===== UPDATED FOCUS STYLES ===== */
+        /* ===== COMPLETELY FIXED FOCUS STYLES ===== */
         input:focus,
         textarea:focus,
-        select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3);
+        select:focus,
+        .inline-checkbox-item .input-part input:focus,
+        .inline-checkbox-item .input-part textarea:focus {
+            outline: none !important;
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3) !important;
         }
 
         .checkbox-item:focus-within,
         .radio-item:focus-within,
         .inline-checkbox-item:focus-within {
-            outline: none;
-            border-color: #667eea;
+            outline: none !important;
+            border-color: #667eea !important;
         }
 
-        /* Remove all focus-visible outlines */
+        /* Remove ALL possible focus outlines */
+        *:focus,
+        *:focus-visible,
+        *:focus-within {
+            outline: none !important;
+        }
+
         input:focus-visible,
         textarea:focus-visible,
         select:focus-visible,
         .checkbox-item:focus-visible,
         .radio-item:focus-visible,
         .inline-checkbox-item:focus-visible {
-            outline: none;
+            outline: none !important;
         }
-        /* ===== END OF UPDATED STYLES ===== */
+
+        /* Override any browser default focus styles */
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: 0 !important;
+            outline-offset: 0 !important;
+            box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3) !important;
+        }
+        /* ===== END OF FIXED FOCUS STYLES ===== */
 
         textarea {
             min-height: 100px;
@@ -865,62 +885,4 @@
             const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/jpg', 'image/png'];
             const maxSize = 10 * 1024 * 1024; // 10MB
 
-            if (!validTypes.includes(file.type)) {
-                alert(`${file.name} is not a valid file type. Please upload PDF, DOC, DOCX, JPG, or PNG files.`);
-                return false;
-            }
-
-            if (file.size > maxSize) {
-                alert(`${file.name} is too large. Maximum file size is 10MB.`);
-                return false;
-            }
-
-            return true;
-        }
-
-        function displayFile(file) {
-            const fileItem = document.createElement('li');
-            fileItem.className = 'file-item';
-            fileItem.innerHTML = `
-                <div class="file-info">
-                    <span class="file-icon">📄</span>
-                    <span class="file-name">${file.name}</span>
-                    <span class="file-size">(${formatFileSize(file.size)})</span>
-                </div>
-                <button type="button" class="remove-file" onclick="removeFile('${file.name}')">Remove</button>
-            `;
-            fileList.appendChild(fileItem);
-        }
-
-        function removeFile(fileName) {
-            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
-            updateFileInput();
-            
-            // Remove from display
-            const fileItems = fileList.querySelectorAll('.file-item');
-            fileItems.forEach(item => {
-                if (item.querySelector('.file-name').textContent === fileName) {
-                    item.remove();
-                }
-            });
-        }
-
-        function updateFileInput() {
-            const dt = new DataTransfer();
-            uploadedFiles.forEach(file => dt.items.add(file));
-            fileInput.files = dt.files;
-        }
-
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        // Make removeFile function available globally
-        window.removeFile = removeFile;
-    </script>
-</body>
-</html>
+            if (!vali
