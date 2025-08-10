@@ -522,7 +522,7 @@
             </div>
         </div>
         <div class="form-content">
-            <form action="/success.html" method="POST" name="galvins-form" netlify="" netlify-honeypot="bot-field">
+            <form action="/success.html" method="POST" name="galvins-form" netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data">
                 <input name="form-name" type="hidden" value="galvins-form"/>
                 <p style="display: none;"><label>Don't fill this out if you're human: <input name="bot-field"/></label></p>
                 
@@ -535,15 +535,15 @@
 
                         <input id="amount" name="amount" type="number" step="0.01" required />
                         <label class="checkbox-item">
-                            <input id="goodsSoldCheck" name="claim_type" type="checkbox" value="goods_sold" />
+                            <input id="goodsSoldCheck" name="claim_type[]" type="checkbox" value="goods_sold" />
                             <span>Goods sold</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="debtIncurredCheck" name="claim_type" type="checkbox" value="debt_incurred" />
+                            <input id="debtIncurredCheck" name="claim_type[]" type="checkbox" value="debt_incurred" />
                             <span>Debt incurred</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="claimOtherCheck" name="claim_type" type="checkbox" value="other" />
+                            <input id="claimOtherCheck" name="claim_type[]" type="checkbox" value="other" />
                             <span>Other</span>
                         </label>
                         <input id="debt_incurred_date" name="debt_incurred_date" type="date" />
@@ -705,7 +705,7 @@
                     <div class="action-required-grid">
                         <div class="inline-checkbox-item fixed-input">
                             <div class="checkbox-part">
-                                <input id="demandLetterCheck" name="action" type="checkbox" value="demand_letter"/>
+                                <input id="demandLetterCheck" name="action[]" type="checkbox" value="demand_letter"/>
                                 <span>Demand Letter</span>
                             </div>
                             <div class="input-part">
@@ -716,15 +716,15 @@
                             </div>
                         </div>
                         <label class="checkbox-item">
-                            <input id="registerCaveatCheck" name="action" type="checkbox" value="register_caveat"/>
+                            <input id="registerCaveatCheck" name="action[]" type="checkbox" value="register_caveat"/>
                             <span>Register Caveat/s</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="issueSummonsCheck" name="action" type="checkbox" value="issue_summons"/>
+                            <input id="issueSummonsCheck" name="action[]" type="checkbox" value="issue_summons"/>
                             <span>Issue Summons</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="actionOtherCheck" name="action" type="checkbox" value="other_action"/>
+                            <input id="actionOtherCheck" name="action[]" type="checkbox" value="other_action"/>
                             <span>Other</span>
                         </label>
                     </div>
@@ -752,19 +752,19 @@
                     <h2 class="section-title">Required Documents</h2>
                     <div id="required-docs-group" class="checkbox-group">
                         <label class="checkbox-item">
-                            <input id="guaranteeCheck" name="document_type" type="checkbox" value="guarantee_indemnity"/>
+                            <input id="guaranteeCheck" name="document_type[]" type="checkbox" value="guarantee_indemnity"/>
                             <span>Guarantee & Indemnity</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="invoiceCheck" name="document_type" type="checkbox" value="invoice_statement"/>
+                            <input id="invoiceCheck" name="document_type[]" type="checkbox" value="invoice_statement"/>
                             <span>Invoice / Statement</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="applicationCheck" name="document_type" type="checkbox" value="account_application"/>
+                            <input id="applicationCheck" name="document_type[]" type="checkbox" value="account_application"/>
                             <span>Account Application</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="docOtherCheck" name="document_type" type="checkbox" value="other_doc"/>
+                            <input id="docOtherCheck" name="document_type[]" type="checkbox" value="other_doc"/>
                             <span>Other</span>
                         </label>
                     </div>
@@ -798,7 +798,7 @@
                             <div class="file-upload-icon">📁</div>
                             <div class="file-upload-text">Drag & drop files here</div>
                             <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
-                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments" type="file" multiple/>
+                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
                         </div>
                         <ul class="file-list" id="fileList"></ul>
                     </div>
@@ -859,7 +859,6 @@
             };
 
             const conditionalCheckboxContainers = {
-
                 'goodsSoldCheck': document.getElementById('goods_sold_details_container'),
                 'debtIncurredCheck': document.getElementById('debt_incurred_details_container'),
                 'claimOtherCheck': document.getElementById('claim_other_details_container'),
@@ -875,24 +874,21 @@
             // --- RADIO BUTTON TOGGLE LOGIC ---
             debtorRadios.forEach(radio => {
                 let wasChecked = false;
-                // Use mousedown to capture the state *before* the click changes it
                 radio.addEventListener('mousedown', () => {
                     wasChecked = radio.checked;
                 });
-                // On click, if it was already checked, uncheck it
                 radio.addEventListener('click', () => {
                     if (wasChecked) {
                         radio.checked = false;
-                        radio.dispatchEvent(new Event('change', { bubbles: true })); // Fire change event for conditional logic
+                        radio.dispatchEvent(new Event('change', { bubbles: true }));
                     }
                 });
             });
             
             // --- AUTO-EXPANDING TEXTAREA LOGIC ---
             const autoResize = (textarea) => {
-                textarea.style.height = 'auto'; // Reset height
-                // Set height based on content, but not less than the min-height (48px)
-                if (textarea.value.trim() === '') {
+                textarea.style.height = 'auto';
+                if (textarea.value.trim() === '' && textarea.placeholder.trim() === '') {
                     textarea.style.height = '48px';
                 } else {
                     const newHeight = Math.max(textarea.scrollHeight, 48); 
@@ -902,7 +898,7 @@
 
             allTextareas.forEach(textarea => {
                 textarea.addEventListener('input', () => autoResize(textarea));
-                autoResize(textarea); // Initial resize on page load
+                autoResize(textarea); 
             });
 
 
@@ -924,7 +920,7 @@
                 if (checkbox && container) {
                     const toggle = () => { container.style.display = checkbox.checked ? 'block' : 'none'; };
                     checkbox.addEventListener('change', toggle);
-                    toggle(); // Initial check
+                    toggle();
                 }
             });
 
@@ -933,20 +929,14 @@
                 form.reset(); 
                 document.getElementById('date').value = '';
 
-                form.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.checked = false;
+                form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                    input.checked = false;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
                 });
-                form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                    checkbox.checked = false;
-                });
-                
-                Object.values(conditionalRadioSections).forEach(section => section.classList.remove('show'));
-                Object.values(conditionalCheckboxContainers).forEach(container => container.style.display = 'none');
                 
                 document.getElementById('send_to_other').style.display = 'none';
 
                 allTextareas.forEach(textarea => {
-                    // Use a timeout to ensure the reset happens first, then resize
                     setTimeout(() => autoResize(textarea), 0);
                 });
                 
@@ -1001,16 +991,9 @@
                 updateFileInput();
             }
 
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const i = Math.floor(Math.log(bytes) / Math.log(1024));
-                return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB', 'GB'][i];
-            }
-
             function displayFile(file) {
                 const fileItem = document.createElement('li');
                 fileItem.className = 'file-item';
-                fileItem.dataset.fileName = file.name;
                 fileItem.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span class="file-name">${file.name}</span></div><button type="button" class="remove-file">Remove</button>`;
                 fileList.appendChild(fileItem);
                 fileItem.querySelector('.remove-file').addEventListener('click', () => {
@@ -1027,7 +1010,6 @@
             }
 
             fileUploadArea.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('click', (e) => e.stopPropagation());
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 fileUploadArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); });
             });
@@ -1035,63 +1017,6 @@
             ['dragleave', 'drop'].forEach(eventName => fileUploadArea.addEventListener(eventName, () => fileUploadArea.classList.remove('dragover')));
             fileUploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
             fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-        });
-    </script>
-	<script>
-        // Form submission script
-        document.addEventListener('DOMContentLoaded', () => {
-          const form = document.querySelector('form[name="galvins-form"]');
-          const fileInput = document.getElementById('fileInput');
-          form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = form.querySelector('.submit-btn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Sending...';
-
-            const fd = new FormData(form);
-            const fields = {};
-            for (const [k, v] of fd.entries()) {
-              if (v instanceof File) continue;
-              fields[k] = v;
-            }
-
-            const attachments = [];
-            for (const file of fileInput.files || []) {
-              const dataUrl = await fileToDataUrl(file);
-              const [meta, base64] = dataUrl.split(',');
-              attachments.push({
-                filename: file.name,
-                contentType: file.type || 'application/octet-stream',
-                contentBase64: base64
-              });
-            }
-
-            const payload = { fields, attachments };
-
-            try {
-              const res = await fetch('/.netlify/functions/send-email', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-              });
-              if (!res.ok) throw new Error(await res.text());
-              window.location.href = '/success.html';
-            } catch (err) {
-              alert('Send failed: ' + (err.message || err));
-            } finally {
-              submitBtn.disabled = false;
-              submitBtn.textContent = 'Submit Instruction Sheet';
-            }
-          });
-
-          function fileToDataUrl(file){
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(file);
-            });
-          }
         });
     </script>
 </body>
