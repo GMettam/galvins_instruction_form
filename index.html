@@ -106,6 +106,10 @@
             white-space: nowrap;
         }
 
+        .form-group-float label.allow-wrap {
+            white-space: normal;
+        }
+
         .form-group-float textarea + label {
             top: 24px;
         }
@@ -149,7 +153,6 @@
         .form-row .form-group {
             margin-bottom: 0;
         }
-
 
         .signature-row {
             grid-template-columns: 1fr 180px;
@@ -728,6 +731,12 @@
                             <span>Other</span>
                         </label>
                     </div>
+                    <div id="demand_letter_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="demand_letter_details" name="demand_letter_details" placeholder=" "></textarea>
+                            <label for="demand_letter_details" class="allow-wrap"><span class="label-main">Demand Letter Details</span> <span class="label-prompt">Send to debtor(s) and/or guarantor(s) at the following street address(es) and/or email address(es):</span></label>
+                        </div>
+                    </div>
                     <div id="register_caveat_details_container" style="display: none; margin-top: 15px;">
                         <div class="form-group-float">
                             <textarea id="caveat_details" name="caveat_details" placeholder=" "></textarea>
@@ -862,6 +871,7 @@
                 'goodsSoldCheck': document.getElementById('goods_sold_details_container'),
                 'debtIncurredCheck': document.getElementById('debt_incurred_details_container'),
                 'claimOtherCheck': document.getElementById('claim_other_details_container'),
+                'demandLetterCheck': document.getElementById('demand_letter_details_container'),
                 'registerCaveatCheck': document.getElementById('register_caveat_details_container'),
                 'issueSummonsCheck': document.getElementById('issue_summons_details_container'),
                 'actionOtherCheck': document.getElementById('action_other_details_container'),
@@ -1021,3 +1031,4 @@
     </script>
 </body>
 </html>
+}
