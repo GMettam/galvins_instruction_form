@@ -1,0 +1,11 @@
+{
+  "name": "galvins-instruction-form",
+  "version": "1.0.0",
+  "description": "Form for Galvins instructions",
+  "scripts": {
+    "build": "netlify-lambda build netlify/functions"
+  },
+  "dependencies": {
+    "netlify-lambda": "^1.6.3"
+  }
+}
