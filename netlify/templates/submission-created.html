@@ -37,10 +37,11 @@
     .data-table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 20px;
     }
     .data-table th, .data-table td {
       text-align: left;
-      padding: 10px;
+      padding: 12px 15px;
       border-bottom: 1px solid #eeeeee;
       vertical-align: top;
     }
@@ -49,6 +50,7 @@
       width: 30%;
       text-transform: capitalize;
       color: #222;
+      background-color: #f9f9f9;
     }
     .data-table td {
       width: 70%;
@@ -57,13 +59,14 @@
     .section-title {
       font-size: 20px;
       margin-top: 30px;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       border-bottom: 2px solid #00c7b7;
       padding-bottom: 5px;
     }
     .attachment-list {
       list-style-type: none;
       padding: 0;
+      margin-top: 15px;
     }
     .attachment-list li {
       margin-bottom: 10px;
@@ -90,13 +93,12 @@
     </div>
 
     <h2 class="section-title">Submitted Data</h2>
+    
     <table class="data-table">
       <tbody>
         {{ range $key, $value := .Data }}
           <tr>
-            <th>{{ $key }}</th>
-            <td>{{ $value }}</td>
-          </tr>
+            <th>{{ $key }}</th> <td>{{ $value }}</td> </tr>
         {{ end }}
       </tbody>
     </table>
@@ -105,9 +107,7 @@
       <h2 class="section-title">Attached Files</h2>
       <ul class="attachment-list">
         {{ range .Files }}
-          <li>
-            <a href="{{ .URL }}">{{ .Filename }}</a> ({{ .Size }} bytes)
-          </li>
+          <li><a href="{{ .URL }}">{{ .Filename }}</a> ({{ .Size }} bytes)</li>
         {{ end }}
       </ul>
     {{ end }}
