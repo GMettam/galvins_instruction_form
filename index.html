@@ -344,27 +344,57 @@
         .file-upload-area {
             border: 2px dashed #667eea;
             border-radius: 10px;
-            padding: 30px 20px 20px 20px;
+            padding: 20px;
             text-align: center;
             background: #f8f9fa;
             cursor: pointer;
             position: relative;
-            min-height: 120px;
-        }
-        
-        .file-upload-content {
-            pointer-events: none;
         }
         
         .file-upload-icon { font-size: 2rem; margin-bottom: 10px; color: #667eea; }
         .file-upload-text { font-size: 1rem; margin-bottom: 5px; color: #2c3e50; font-weight: 600; }
         .file-upload-subtext { color: #666; font-size: 0.9rem; }
-        .file-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-        .file-list { margin-top: 20px; padding: 0; list-style: none; text-align: left; }
-        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e1e8ed; gap: 10px; pointer-events: auto; }
-        .file-info { display: flex; align-items: center; flex: 1; min-width: 0; }
-        .file-name { font-weight: 600; word-break: break-all; }
-        .remove-file { background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
+        .file-input { display: none; }
+        
+        .file-list {
+            margin-top: 20px;
+            padding: 0;
+            list-style: none;
+            text-align: left;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border: 1px solid #e1e8ed;
+            gap: 10px;
+        }
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+        .file-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            min-width: 0;
+        }
+        .file-name {
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .remove-file {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
         
         .submit-btn, .reset-btn {
             border: none;
@@ -703,4 +733,348 @@
                             <div class="form-group form-group-float">
                                 <textarea id="g_guarantor_emails" name="g_guarantor_emails" placeholder=" "></textarea>
                                 <label for="g_guarantor_emails"><span class="label-main">Email Address(es)</span> <span class="label-prompt">List email addresses</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Action Required</h2>
+                    <div class="action-required-grid">
+                        <div class="inline-checkbox-item fixed-input">
+                            <div class="checkbox-part">
+                                <input id="demandLetterCheck" name="action[]" type="checkbox" value="demand_letter"/>
+                                <span>Demand Letter</span>
+                            </div>
+                            <div class="input-part">
+                                <div class="days-input-wrapper">
+                                    <input id="demand_letter_days" min="1" max="99" name="demand_letter_days" placeholder="e.g. 7" type="number"/>
+                                    <span>days</span>
+                                </div>
+                            </div>
+                        </div>
+                        <label class="checkbox-item">
+                            <input id="registerCaveatCheck" name="action[]" type="checkbox" value="register_caveat"/>
+                            <span>Register Caveat/s</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input id="issueSummonsCheck" name="action[]" type="checkbox" value="issue_summons"/>
+                            <span>Issue Summons</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input id="actionOtherCheck" name="action[]" type="checkbox" value="other_action"/>
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <div id="demand_letter_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="demand_letter_details" name="demand_letter_details" placeholder=" "></textarea>
+                            <label for="demand_letter_details" class="allow-wrap"><span class="label-main">Demand Letter Details</span> <span class="label-prompt">Send to debtor(s) and/or guarantor(s) at the following street address(es) and/or email address(es):</span></label>
+                        </div>
+                    </div>
+                    <div id="register_caveat_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="caveat_details" name="caveat_details" placeholder=" "></textarea>
+                            <label for="caveat_details"><span class="label-main">Property Details for Caveat</span> <span class="label-prompt">Provide Title Reference, Lot/Plan, address</span></label>
+                        </div>
+                    </div>
+                    <div id="issue_summons_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="issue_summons_details" name="issue_summons_details" placeholder=" "></textarea>
+                            <label for="issue_summons_details"><span class="label-main">Details for Issuing Summons</span> <span class="label-prompt">Provide any specific details required</span></label>
+                        </div>
+                    </div>
+                    <div id="action_other_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="action_other_details" name="action_other_details" placeholder=" "></textarea>
+                            <label for="action_other_details"><span class="label-main">Other Action Details</span> <span class="label-prompt">Please specify the action required</span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Required Documents</h2>
+                    <div id="required-docs-group" class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input id="guaranteeCheck" name="document_type[]" type="checkbox" value="guarantee_indemnity"/>
+                            <span>Guarantee & Indemnity</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input id="invoiceCheck" name="document_type[]" type="checkbox" value="invoice_statement"/>
+                            <span>Invoice / Statement</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input id="applicationCheck" name="document_type[]" type="checkbox" value="account_application"/>
+                            <span>Account Application</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input id="docOtherCheck" name="document_type[]" type="checkbox" value="other_doc"/>
+                            <span>Other</span>
+                        </label>
+                    </div>
+                    <div id="guarantee_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="guarantee_details" name="guarantee_details" placeholder=" "></textarea>
+                            <label for="guarantee_details"><span class="label-main">Guarantee & Indemnity Details</span> <span class="label-prompt">e.g., Date signed, parties involved</span></label>
+                        </div>
+                    </div>
+                    <div id="invoice_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="invoice_details" name="invoice_details" placeholder=" "></textarea>
+                            <label for="invoice_details"><span class="label-main">Invoice / Statement Details</span> <span class="label-prompt">e.g., Invoice numbers, dates</span></label>
+                        </div>
+                    </div>
+                    <div id="application_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="application_details" name="application_details" placeholder=" "></textarea>
+                            <label for="application_details"><span class="label-main">Account Application Details</span> <span class="label-prompt">e.g., Date of application</span></label>
+                        </div>
+                    </div>
+                    <div id="doc_other_details_container" style="display: none; margin-top: 15px;">
+                        <div class="form-group-float">
+                            <textarea id="doc_other_details" name="doc_other_details" placeholder=" "></textarea>
+                            <label for="doc_other_details"><span class="label-main">Other Document</span> <span class="label-prompt">Please specify document type</span></label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Upload Documents</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">Drag & drop files here</div>
+                            <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
+                            <ul class="file-list" id="fileList"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Additional Information</h2>
+                    <div class="form-group form-group-float">
+                        <textarea id="comments" name="comments" placeholder=" "></textarea>
+						<label for="comments"><span class="label-main">Comments</span> <span class="label-prompt">Please provide any additional information or special instructions...</span></label>
+                    </div>
+                    <div class="form-row signature-row">
+                        <div class="form-group">
+                            <label for="signature">Signature *</label>
+                            <input id="signature" name="signature" placeholder="Type your full name" required="" type="text"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date *</label>
+                            <input id="date" name="date" required="" type="date"/>
+                        </div>
+                    </div>
+                    <div class="form-group form-group-spaced">
+                        <label for="send_to">Send to *</label>
+                        <select id="send_to" name="send_to" required="">
+                            <option value="">Select recipient...</option>
+                            <option value="darlene.carpenter@mccabeswa.com.au">Darlene Carpenter - darlene.carpenter@mccabeswa.com.au</option>
+                            <option value="natasha.beech@mccabeswa.com.au">Natasha Beech - natasha.beech@mccabeswa.com.au</option>
+                            <option value="other">Other (specify below)</option>
+                        </select>
+                        <input id="send_to_other" name="send_to_other" placeholder="Enter recipient email address..." style="display: none; margin-top: 10px;" type="text"/>
+                    </div>
+                </div>
+                <button class="submit-btn" type="submit">Submit Instruction Sheet</button>
+                <button class="reset-btn" type="button">Reset Form</button>
+            </form>
+        </div>
+    </div>
+    <button class="print-btn" id="printButton">Print Form</button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- FORM ELEMENTS ---
+            const form = document.querySelector('form[name="galvins-form"]');
+            const resetButton = document.querySelector('.reset-btn');
+            const printButton = document.getElementById('printButton');
+            const amountInput = document.getElementById('amount');
+            const fileUploadArea = document.getElementById('fileUploadArea');
+            const fileInput = document.getElementById('fileInput');
+            const fileList = document.getElementById('fileList');
+            const allTextareas = document.querySelectorAll('textarea');
+            const debtorRadios = document.querySelectorAll('input[name="debtor_type"]');
+            
+            const conditionalRadioSections = {
+                'sole_proprietor': document.getElementById('sole_proprietor_fields'),
+                'partnership': document.getElementById('partnership_fields'),
+                'company': document.getElementById('company_fields'),
+                'guarantor': document.getElementById('guarantor_fields')
+            };
+
+            const conditionalCheckboxContainers = {
+                'goodsSoldCheck': document.getElementById('goods_sold_details_container'),
+                'debtIncurredCheck': document.getElementById('debt_incurred_details_container'),
+                'claimOtherCheck': document.getElementById('claim_other_details_container'),
+                'demandLetterCheck': document.getElementById('demand_letter_details_container'),
+                'registerCaveatCheck': document.getElementById('register_caveat_details_container'),
+                'issueSummonsCheck': document.getElementById('issue_summons_details_container'),
+                'actionOtherCheck': document.getElementById('action_other_details_container'),
+                'guaranteeCheck': document.getElementById('guarantee_details_container'),
+                'invoiceCheck': document.getElementById('invoice_details_container'),
+                'applicationCheck': document.getElementById('application_details_container'),
+                'docOtherCheck': document.getElementById('doc_other_details_container')
+            };
+
+            // --- RADIO BUTTON TOGGLE LOGIC ---
+            debtorRadios.forEach(radio => {
+                let wasChecked = false;
+                radio.addEventListener('mousedown', () => {
+                    wasChecked = radio.checked;
+                });
+                radio.addEventListener('click', () => {
+                    if (wasChecked) {
+                        radio.checked = false;
+                        radio.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                });
+            });
+            
+            // --- AUTO-EXPANDING TEXTAREA LOGIC ---
+            const autoResize = (textarea) => {
+                textarea.style.height = 'auto';
+                if (textarea.value.trim() === '' && textarea.placeholder.trim() === '') {
+                    textarea.style.height = '48px';
+                } else {
+                    const newHeight = Math.max(textarea.scrollHeight, 48); 
+                    textarea.style.height = newHeight + 'px';
+                }
+            };
+
+            allTextareas.forEach(textarea => {
+                textarea.addEventListener('input', () => autoResize(textarea));
+                autoResize(textarea); 
+            });
+
+
+            // --- CONDITIONAL LOGIC ---
+            document.querySelectorAll('input[name="debtor_type"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    Object.values(conditionalRadioSections).forEach(section => {
+                        if (section) section.classList.remove('show');
+                    });
+                    if (this.checked && conditionalRadioSections[this.value]) {
+                        conditionalRadioSections[this.value].classList.add('show');
+                    }
+                });
+            });
+
+            Object.keys(conditionalCheckboxContainers).forEach(checkboxId => {
+                const checkbox = document.getElementById(checkboxId);
+                const container = conditionalCheckboxContainers[checkboxId];
+                if (checkbox && container) {
+                    const toggle = () => { container.style.display = checkbox.checked ? 'block' : 'none'; };
+                    checkbox.addEventListener('change', toggle);
+                    toggle();
+                }
+            });
+
+            // --- RESET BUTTON LOGIC ---
+            resetButton.addEventListener('click', function() {
+                form.reset(); 
+                document.getElementById('date').value = '';
+
+                form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
+                    input.checked = false;
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                });
                 
+                document.getElementById('send_to_other').style.display = 'none';
+
+                allTextareas.forEach(textarea => {
+                    setTimeout(() => autoResize(textarea), 0);
+                });
+                
+                resetButton.disabled = true;
+                resetButton.classList.add('is-resetting');
+                resetButton.textContent = 'Form Cleared!';
+                setTimeout(() => {
+                    resetButton.classList.remove('is-resetting');
+                    resetButton.textContent = 'Reset Form';
+                    resetButton.disabled = false;
+                }, 1500);
+            });
+
+            // --- OTHER LISTENERS ---
+            printButton.addEventListener('click', () => window.print());
+
+            document.getElementById('send_to').addEventListener('change', function() {
+                const otherField = document.getElementById('send_to_other');
+                otherField.style.display = this.value === 'other' ? 'block' : 'none';
+                otherField.required = this.value === 'other';
+            });
+
+            amountInput.addEventListener('blur', function() {
+                if (this.value) {
+                    const value = parseFloat(this.value.replace(/[^0-9.-]+/g, ""));
+                    if (!isNaN(value)) {
+                        this.type = 'text';
+                        this.value = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(value);
+                    }
+                }
+            });
+
+            amountInput.addEventListener('focus', function() {
+                if(this.value) {
+                    const unformattedValue = this.value.replace(/[^0-9.-]+/g, "");
+                    this.type = 'number';
+                    this.value = unformattedValue;
+                }
+            });
+
+            document.getElementById('date').valueAsDate = new Date();
+
+            // --- FILE UPLOAD LOGIC ---
+            let uploadedFiles = new Map();
+            function handleFiles(files) {
+                [...files].forEach(file => {
+                    if (!uploadedFiles.has(file.name)) {
+                        uploadedFiles.set(file.name, file);
+                        displayFile(file);
+                    }
+                });
+                updateFileInput();
+            }
+
+            function displayFile(file) {
+                const fileItem = document.createElement('li');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span class="file-name">${file.name}</span></div><button type="button" class="remove-file">Remove</button>`;
+                fileList.appendChild(fileItem);
+                
+                fileItem.querySelector('.remove-file').addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    uploadedFiles.delete(file.name);
+                    fileItem.remove();
+                    updateFileInput();
+                });
+            }
+
+            function updateFileInput() {
+                const dt = new DataTransfer();
+                uploadedFiles.forEach(file => dt.items.add(file));
+                fileInput.files = dt.files;
+            }
+
+            fileUploadArea.addEventListener('click', (e) => {
+                if (!e.target.closest('.file-item')) {
+                    fileInput.click();
+                }
+            });
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileUploadArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); });
+            });
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileUploadArea.addEventListener(eventName, () => fileUploadArea.style.borderColor = 'green');
+            });
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileUploadArea.addEventListener(eventName, () => fileUploadArea.style.borderColor = '#667eea');
+            });
+            
+            fileUploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
+            fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+        });
+    </script>
+</body>
+</html>
