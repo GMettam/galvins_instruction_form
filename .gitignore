@@ -1,5 +1,9 @@
-# Local Netlify folder
-.netlify
+# Un-ignore Netlify functions
+!.netlify/functions/
+!.netlify/functions/**
+
+# Ignore Netlify build cache only
+.netlify/cache/
 
 # Ignore dependencies
 node_modules/
