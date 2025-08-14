@@ -6,11 +6,8 @@ exports.handler = async (event) => {
   const payload = JSON.parse(event.body).payload;
   const formData = payload.data;
 
-  console.log('Received form data:', formData);
-
   const fieldMapping = {
-    amount: 'Amount ($) *',
-    // IMPORTANT: Checkbox arrays are joined with a comma by Netlify
+    amount: 'Amount ($)',
     'claim_type[]': 'Claim Type', 
     debt_incurred_date: 'Debt incurred from',
     goods_sold_details: 'Details of Goods Sold',
@@ -18,22 +15,21 @@ exports.handler = async (event) => {
     claim_other_details: 'Other Claim Type Details',
     account_no: 'Account No.',
     debtor_type: 'Debtor Type',
-    // NOTE: The field names might be different based on which conditional section was filled
-    // We will consolidate them here.
-    fullName: 'Full Name *',
-    mobilePhone: 'Mobile Phone *',
-    email: 'Email Address *',
+    // Consolidate the different "name" fields into one
+    fullName: 'Full Name', 
+    mobilePhone: 'Mobile Phone',
+    email: 'Email Address',
     acnAbn: 'ACN/ABN',
-    homeAddress: 'Home Address *',
-    partnershipName: 'Partnership Name *',
-    contactPhone: 'Contact Phone *',
-    partnersNames: "Partners' Names *",
-    businessAddress: 'Business Address *',
-    companyName: 'Company Name *',
-    registeredOffice: 'Registered Office *',
-    guarantorNames: "Guarantor(s) Names *",
+    homeAddress: 'Home Address',
+    partnershipName: 'Partnership Name',
+    contactPhone: 'Contact Phone',
+    partnersNames: "Partners' Names",
+    businessAddress: 'Business Address',
+    companyName: 'Company Name',
+    registeredOffice: 'Registered Office',
+    guarantorNames: "Guarantor(s) Names",
     guarantorPhones: 'Phone Number(s)',
-    guarantorAddresses: "Guarantor(s) Addresses *",
+    guarantorAddresses: "Guarantor(s) Addresses",
     guarantorEmails: 'Email Address(es)',
     'action[]': 'Action',
     demand_letter_days: 'Demand Letter Days',
@@ -47,19 +43,17 @@ exports.handler = async (event) => {
     application_details: 'Account Application Details',
     doc_other_details: 'Other Document',
     comments: 'Comments',
-    signature: 'Signature *',
-    date: 'Date *',
-    send_to: 'Send to *',
+    signature: 'Signature',
+    date: 'Date',
+    send_to: 'Send to',
     send_to_other: 'Other Recipient',
-    // Netlify provides uploaded file info automatically
-    attachments: 'Attachments'
   };
 
-  // Consolidate conditional fields into common names
+  // Consolidate conditional fields into common names so they appear correctly
   const consolidatedData = {
     ...formData,
-    fullName: formData.sp_full_name || formData.c_full_name, // Example, adjust as needed
-    mobilePhone: formData.sp_mobile || formData.c_contact_phone || formData.p_contact_phone,
+    fullName: formData.sp_full_name || formData.c_full_name || formData.p_partners_names,
+    mobilePhone: formData.sp_mobile,
     email: formData.sp_email || formData.p_email || formData.c_email,
     acnAbn: formData.sp_acn_abn || formData.p_acn_abn || formData.c_acn_abn,
     homeAddress: formData.sp_home_address,
@@ -72,80 +66,84 @@ exports.handler = async (event) => {
     guarantorNames: formData.g_guarantor_names,
     guarantorPhones: formData.g_guarantor_phones,
     guarantorAddresses: formData.g_guarantor_addresses,
-    guarantorEmails: formData.g_guarantor_emails,
+    guarantorEmails: formData.g_guarantor_emails
   };
   
   // Build rows only for fields that have values
-  const rowsHtml = Object.entries(fieldMapping)
+  let rowsHtml = Object.entries(fieldMapping)
     .map(([fieldName, label]) => {
+      // Use the consolidated data to find the value
       const value = consolidatedData[fieldName];
       
+      // Check if the value exists and isn't just whitespace
       if (value && String(value).trim()) {
+        // For array values (from checkboxes), join them with commas
+        const displayValue = Array.isArray(value) ? value.join(', ') : value;
         return `
           <tr>
-            <th style="padding:12px;border:1px solid #ddd;background-color:#f8f9fa;text-align:left;font-weight:600;color:#333;">
+            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">
               ${label}
             </th>
-            <td style="padding:12px;border:1px solid #ddd;color:#555;">
-              ${Array.isArray(value) ? value.join(', ') : value}
+            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">
+              ${displayValue}
             </td>
           </tr>`;
       }
-      return '';
+      return ''; // Return an empty string for empty fields
     })
-    .filter(row => row !== '')
+    .filter(row => row !== '') // Filter out the empty strings
     .join('');
 
-  // Also include file upload info if present
-  let fileInfoHtml = '';
+  // Add file upload info if present
   if (payload.files && payload.files.length > 0) {
       const fileLinks = payload.files.map(file => `<a href="${file.url}">${file.filename}</a>`).join('<br>');
-      fileInfoHtml = `
+      rowsHtml += `
           <tr>
-            <th style="padding:12px;border:1px solid #ddd;background-color:#f8f9fa;text-align:left;font-weight:600;color:#333;">
+            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">
               Uploaded Files
             </th>
-            <td style="padding:12px;border:1px solid #ddd;color:#555;">
+            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">
               ${fileLinks}
             </td>
           </tr>
       `;
   }
 
-  // Enhanced HTML with better styling
+  // If no fields were filled out at all, display a message instead of an empty table
+  if (!rowsHtml) {
+    rowsHtml = `<tr><td style="padding: 12px; text-align: center;">No information was entered in the form.</td></tr>`;
+  }
+
   const htmlBody = `
-    <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;">
-      <h2 style="color:#2c3e50;margin-bottom:20px;text-align:center;">New Form Submission</h2>
-      <table style="border-collapse:collapse;width:100%;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+    <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
+      <h2 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">New Form Submission</h2>
+      <table style="border-collapse: collapse; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <tbody>
           ${rowsHtml}
-          ${fileInfoHtml}
         </tbody>
       </table>
-      <p style="margin-top:20px;font-size:12px;color:#666;text-align:center;">
+      <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
         Submitted on ${new Date(payload.created_at).toLocaleString()}
       </p>
     </div>
   `;
 
   // Determine the recipient
-  const recipient = formData.send_to === 'other' ? formData.send_to_other : formData.send_to;
+  const recipient = consolidatedData.send_to === 'other' ? consolidatedData.send_to_other : consolidatedData.send_to;
   
   const msg = {
     to: recipient,
-    from: 'gregorymettam@gmail.com', // This should be a verified sender domain in SendGrid
-    subject: `New Instruction Sheet Submission - ${payload.number}`,
+    from: 'gregorymettam@gmail.com', // MUST be a verified sender in SendGrid
+    subject: `New Instruction Sheet Submission - #${payload.number}`,
     html: htmlBody,
   };
   
   try {
-    if(!recipient) {
-      throw new Error("No recipient specified.");
-    }
+    if (!recipient) throw new Error("No recipient specified.");
     await sgMail.send(msg);
     return { statusCode: 200, body: 'Email sent successfully.' };
   } catch (err) {
-    console.error('Error:', err);
-    return { statusCode: err.code || 500, body: err.message };
+    console.error('Error:', err.toString());
+    return { statusCode: 500, body: err.toString() };
   }
 };
