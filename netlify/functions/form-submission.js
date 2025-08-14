@@ -85,12 +85,17 @@ exports.handler = async (event) => {
     </div>
   `
 
-  const msg = {
-    to:   'your-email@domain.com',
-    from: 'your-email@domain.com', 
-    subject: 'New Form Submission',
-    html: htmlBody,
-  }
+const msg = {
+  to:    'gregorymettam@gmail.com',
+  from:  'gregorymettam@gmail.com',
+  subject: 'New Form Submission',
+  content: [
+    {
+      type:  'text/html',
+      value: htmlBody,
+    },
+  ],
+}
 
   try {
     await sgMail.send(msg)
