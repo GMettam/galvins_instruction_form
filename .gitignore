@@ -1,3 +1,5 @@
 # Local Netlify folder
 .netlify
-# This is a test.
+
+# Ignore dependencies
+node_modules/
