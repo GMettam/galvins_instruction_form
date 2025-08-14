@@ -3,7 +3,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 exports.handler = async (event) => {
   const params = new URLSearchParams(event.body)
-  
+
+  // Log every received field and its value
+  console.log('Received form fields:', Object.fromEntries(params.entries()))
+
+  // …rest of your handler…
+}
   // Map form field names to friendly labels
   const fieldMapping = {
     'amount': 'Amount ($) *',
