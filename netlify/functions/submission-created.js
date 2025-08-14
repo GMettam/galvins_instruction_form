@@ -2,21 +2,31 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 exports.handler = async (event) => {
-  // For submission-created functions, the data is in a different place
-  const payload = JSON.parse(event.body).payload;
+  // --- This is the new, safer parsing logic ---
+  console.log("Function invoked. Raw event body:", event.body);
+  
+  let payload;
+  try {
+    payload = JSON.parse(event.body).payload;
+  } catch (error) {
+    console.error("CRITICAL ERROR: Failed to parse event body.", error);
+    return { statusCode: 400, body: "Invalid request body." };
+  }
+
   const formData = payload.data;
+  console.log("Successfully parsed form data:", formData);
+  // --- End of new logic ---
 
   const fieldMapping = {
     amount: 'Amount ($)',
-    'claim_type[]': 'Claim Type', 
+    'claim_type[]': 'Claim Type',
     debt_incurred_date: 'Debt incurred from',
     goods_sold_details: 'Details of Goods Sold',
     debt_incurred_details: 'Details of Debt Incurred',
     claim_other_details: 'Other Claim Type Details',
     account_no: 'Account No.',
     debtor_type: 'Debtor Type',
-    // Consolidate the different "name" fields into one
-    fullName: 'Full Name', 
+    fullName: 'Full Name',
     mobilePhone: 'Mobile Phone',
     email: 'Email Address',
     acnAbn: 'ACN/ABN',
@@ -49,7 +59,6 @@ exports.handler = async (event) => {
     send_to_other: 'Other Recipient',
   };
 
-  // Consolidate conditional fields into common names so they appear correctly
   const consolidatedData = {
     ...formData,
     fullName: formData.sp_full_name || formData.c_full_name || formData.p_partners_names,
@@ -69,47 +78,31 @@ exports.handler = async (event) => {
     guarantorEmails: formData.g_guarantor_emails
   };
   
-  // Build rows only for fields that have values
   let rowsHtml = Object.entries(fieldMapping)
     .map(([fieldName, label]) => {
-      // Use the consolidated data to find the value
       const value = consolidatedData[fieldName];
-      
-      // Check if the value exists and isn't just whitespace
       if (value && String(value).trim()) {
-        // For array values (from checkboxes), join them with commas
         const displayValue = Array.isArray(value) ? value.join(', ') : value;
         return `
           <tr>
-            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">
-              ${label}
-            </th>
-            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">
-              ${displayValue}
-            </td>
+            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">${label}</th>
+            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${displayValue}</td>
           </tr>`;
       }
-      return ''; // Return an empty string for empty fields
+      return '';
     })
-    .filter(row => row !== '') // Filter out the empty strings
+    .filter(row => row !== '')
     .join('');
 
-  // Add file upload info if present
   if (payload.files && payload.files.length > 0) {
       const fileLinks = payload.files.map(file => `<a href="${file.url}">${file.filename}</a>`).join('<br>');
       rowsHtml += `
           <tr>
-            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">
-              Uploaded Files
-            </th>
-            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">
-              ${fileLinks}
-            </td>
-          </tr>
-      `;
+            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">Uploaded Files</th>
+            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${fileLinks}</td>
+          </tr>`;
   }
 
-  // If no fields were filled out at all, display a message instead of an empty table
   if (!rowsHtml) {
     rowsHtml = `<tr><td style="padding: 12px; text-align: center;">No information was entered in the form.</td></tr>`;
   }
@@ -118,22 +111,18 @@ exports.handler = async (event) => {
     <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto;">
       <h2 style="color: #2c3e50; margin-bottom: 20px; text-align: center;">New Form Submission</h2>
       <table style="border-collapse: collapse; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <tbody>
-          ${rowsHtml}
-        </tbody>
+        <tbody>${rowsHtml}</tbody>
       </table>
       <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
         Submitted on ${new Date(payload.created_at).toLocaleString()}
       </p>
-    </div>
-  `;
-
-  // Determine the recipient
+    </div>`;
+    
   const recipient = consolidatedData.send_to === 'other' ? consolidatedData.send_to_other : consolidatedData.send_to;
   
   const msg = {
     to: recipient,
-    from: 'gregorymettam@gmail.com', // MUST be a verified sender in SendGrid
+    from: 'gregorymettam@gmail.com',
     subject: `New Instruction Sheet Submission - #${payload.number}`,
     html: htmlBody,
   };
@@ -143,7 +132,7 @@ exports.handler = async (event) => {
     await sgMail.send(msg);
     return { statusCode: 200, body: 'Email sent successfully.' };
   } catch (err) {
-    console.error('Error:', err.toString());
+    console.error('Error sending email:', err.toString());
     return { statusCode: 500, body: err.toString() };
   }
 };
