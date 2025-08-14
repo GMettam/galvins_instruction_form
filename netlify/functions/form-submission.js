@@ -108,4 +108,4 @@ exports.handler = async (event) => {
     if (err.response) console.error(err.response.body);
     return { statusCode: err.code || 500, body: err.message };
   }
-}; // <--- The handler function should close here, at the end of the file.
+};
