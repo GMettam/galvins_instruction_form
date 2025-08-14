@@ -49,54 +49,60 @@ exports.handler = async (event) => {
     // Add any other fields you have...
   }
 
-  // Build rows only for fields that have values
-  const rowsHtml = Object.entries(fieldMapping)
-    .map(([fieldName, label]) => {
-      const value = params.get(fieldName)
-      // Only include this row if the field has a non-empty value
-      if (value && value.trim()) {
-        return `
-          <tr>
-            <th style="padding:12px;border:1px solid #ddd;background-color:#f8f9fa;text-align:left;font-weight:600;color:#333;">
-              ${label}
-            </th>
-            <td style="padding:12px;border:1px solid #ddd;color:#555;">
-              ${value}
-            </td>
-          </tr>`
-      }
-      return '' // Return empty string for fields without values
-    })
-    .filter(row => row !== '') // Remove empty strings
-    .join('')
+// Build rows only for fields that have values
+const rowsHtml = Object.entries(fieldMapping)
+  .map(([fieldName, label]) => {
+    const value = params.get(fieldName)
+    if (value && value.trim()) {
+      return `
+        <tr>
+          <th style="padding:12px;border:1px solid #ddd;background-color:#f8f9fa;text-align:left;font-weight:600;color:#333;">
+            ${label}
+          </th>
+          <td style="padding:12px;border:1px solid #ddd;color:#555;">
+            ${value}
+          </td>
+        </tr>`
+    }
+    return ''
+  })
+  .filter(row => row !== '')
+  .join('')
 
-  // Enhanced HTML with better styling
-  const htmlBody = `
-    <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;">
-      <h2 style="color:#2c3e50;margin-bottom:20px;text-align:center;">New Form Submission</h2>
-      <table style="border-collapse:collapse;width:100%;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
-        <tbody>
-          ${rowsHtml}
-        </tbody>
-      </table>
-      <p style="margin-top:20px;font-size:12px;color:#666;text-align:center;">
-        Submitted on ${new Date().toLocaleString()}
-      </p>
-    </div>
-  `
+// Build a plain-text fallback
+const textBody = Object.entries(fieldMapping)
+  .map(([fieldName, label]) => {
+    const value = params.get(fieldName)
+    return value && value.trim() ? `${label}: ${value}` : null
+  })
+  .filter(line => line)
+  .join('\n')
 
+// Enhanced HTML with better styling
+const htmlBody = `
+  <div style="font-family:Arial,sans-serif;max-width:800px;margin:0 auto;">
+    <h2 style="color:#2c3e50;margin-bottom:20px;text-align:center;">New Form Submission</h2>
+    <table style="border-collapse:collapse;width:100%;box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+      <tbody>
+        ${rowsHtml}
+      </tbody>
+    </table>
+    <p style="margin-top:20px;font-size:12px;color:#666;text-align:center;">
+      Submitted on ${new Date().toLocaleString()}
+    </p>
+  </div>
+`
+// Then build your SendGrid message with both text and HTML
 const msg = {
-  to:    'gregorymettam@gmail.com',
-  from:  'gregorymettam@gmail.com',
+  to:      'gregorymettam@gmail.com',
+  from:    'gregorymettam@gmail.com',
   subject: 'New Form Submission',
   content: [
-    {
-      type:  'text/html',
-      value: htmlBody,
-    },
+    { type: 'text/plain', value: textBody },
+    { type: 'text/html',  value: htmlBody },
   ],
 }
-
+  
   try {
     await sgMail.send(msg)
     return { statusCode: 200, body: 'Email sent successfully.' }
