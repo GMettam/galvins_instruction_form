@@ -559,10 +559,16 @@
                 <div class="header-text"><h1>Instruction Sheet</h1></div>
             </div>
         </div>
-        <div class="form-content">
-				<form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
-			  <input name="form-name" type="hidden" value="galvins-form"/>
-                <p style="display: none;"><label>Don't fill this out if you're human: <input name="bot-field"/></label></p>
+        <div class="form-content">	
+		
+			
+			<form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
+  <input type="hidden" name="form-template" value="email-template.html">
+
+  <input name="form-name" type="hidden" value="galvins-form"/>
+  <p style="display: none;"><label>Don't fill this out if you're human: <input name="bot-field"/></label></p>
+   
+		
                 
                 <div class="form-section">
                     <h2 class="section-title">Claim Details</h2>
@@ -878,6 +884,7 @@
                 <button class="submit-btn" type="submit">Submit Instruction Sheet</button>
                 <button class="reset-btn" type="button">Reset Form</button>
             </form>
+			
         </div>
     </div>
     <button class="print-btn" id="printButton">Print Form</button>
