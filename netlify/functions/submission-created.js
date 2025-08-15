@@ -20,26 +20,25 @@ exports.handler = async (event) => {
   const files = payload.files;
 
   let attachments = [];
+  let attachmentErrors = []; // --- NEW: Variable to store errors
+
   if (files && files.length > 0) {
     attachments = await Promise.all(
       files.map(async (file) => {
         try {
           const response = await fetch(file.url);
           if (!response.ok) {
-            console.error(`Failed to download file: ${file.filename}`);
-            return null;
+            throw new Error(`Failed to download file with status: ${response.statusText}`);
           }
           const fileBuffer = await response.buffer();
           const content = fileBuffer.toString('base64');
           
           return {
-            content: content,
-            filename: file.filename,
-            type: file.type,
-            disposition: 'attachment',
+            content: content, filename: file.filename, type: file.type, disposition: 'attachment',
           };
         } catch (error) {
-          console.error(`Error processing file ${file.filename}:`, error);
+          // --- NEW: Store the error message instead of just logging it
+          attachmentErrors.push(`Could not attach '${file.filename}': ${error.message}`);
           return null;
         }
       })
@@ -66,14 +65,12 @@ exports.handler = async (event) => {
   
   const consolidatedData = {
     ...formData,
-    fullName: formData.sp_full_name || formData.c_full_name || formData.p_partners_names,
-    mobilePhone: formData.sp_mobile, email: formData.sp_email || formData.p_email || formData.c_email,
-    acnAbn: formData.sp_acn_abn || formData.p_acn_abn || formData.c_acn_abn, homeAddress: formData.sp_home_address,
-    partnershipName: formData.p_partnership_name, contactPhone: formData.p_contact_phone || formData.c_contact_phone,
+    fullName: formData.sp_full_name || formData.c_full_name || formData.p_partners_names, mobilePhone: formData.sp_mobile,
+    email: formData.sp_email || formData.p_email || formData.c_email, acnAbn: formData.sp_acn_abn || formData.p_acn_abn || formData.c_acn_abn,
+    homeAddress: formData.sp_home_address, partnershipName: formData.p_partnership_name, contactPhone: formData.p_contact_phone || formData.c_contact_phone,
     partnersNames: formData.p_partners_names, businessAddress: formData.p_business_address || formData.c_business_address,
-    companyName: formData.c_company_name, registeredOffice: formData.c_registered_office,
-    guarantorNames: formData.g_guarantor_names, guarantorPhones: formData.g_guarantor_phones,
-    guarantorAddresses: formData.g_guarantor_addresses, guarantorEmails: formData.g_guarantor_emails
+    companyName: formData.c_company_name, registeredOffice: formData.c_registered_office, guarantorNames: formData.g_guarantor_names,
+    guarantorPhones: formData.g_guarantor_phones, guarantorAddresses: formData.g_guarantor_addresses, guarantorEmails: formData.g_guarantor_emails
   };
   
   let rowsHtml = Object.entries(fieldMapping)
@@ -84,19 +81,24 @@ exports.handler = async (event) => {
       }
       if (value && String(value).trim()) {
         const displayValue = Array.isArray(value) ? value.join(', ') : value;
-        return `
-          <tr>
-            <th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">${label}</th>
-            <td style="padding: 12px; border: 1px solid #ddd; color: #555;">${displayValue}</td>
-          </tr>`;
+        return `<tr><th style="padding: 12px; border: 1px solid #ddd; background-color: #f8f9fa; text-align: left; font-weight: 600; color: #333;">${label}</th><td style="padding: 12px; border: 1px solid #ddd; color: #555;">${displayValue}</td></tr>`;
       }
       return '';
-    })
-    .filter(row => row !== '')
-    .join('');
+    }).filter(row => row !== '').join('');
 
   if (!rowsHtml && attachments.length === 0) {
     rowsHtml = `<tr><td style="padding: 12px; text-align: center;">No information was entered in the form.</td></tr>`;
+  }
+
+  // --- NEW: Create an HTML block for any errors ---
+  let errorHtml = '';
+  if (attachmentErrors.length > 0) {
+    errorHtml = `
+      <div style="margin-top: 20px; padding: 15px; border: 1px solid #e74c3c; background-color: #fbeae5; border-radius: 6px;">
+        <h3 style="color: #c0392b; margin-top: 0;">Attachment Error</h3>
+        <p style="color: #c0392b;">${attachmentErrors.join('<br>')}</p>
+      </div>
+    `;
   }
 
   const htmlBody = `
@@ -105,7 +107,7 @@ exports.handler = async (event) => {
       <table style="border-collapse: collapse; width: 100%; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         <tbody>${rowsHtml}</tbody>
       </table>
-      <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
+      ${errorHtml} <p style="margin-top: 20px; font-size: 12px; color: #666; text-align: center;">
         Submitted on ${formatDate(payload.created_at)}
       </p>
     </div>`;
