@@ -17,11 +17,12 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 exports.handler = async (event) => {
   const payload = JSON.parse(event.body).payload;
   const formData = payload.data;
+  const files = payload.files;
 
   let attachments = [];
-  if (payload.files && payload.files.length > 0) {
+  if (files && files.length > 0) {
     attachments = await Promise.all(
-      payload.files.map(async (file) => {
+      files.map(async (file) => {
         try {
           const response = await fetch(file.url);
           if (!response.ok) {
