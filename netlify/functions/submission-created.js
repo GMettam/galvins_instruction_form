@@ -122,7 +122,7 @@ exports.handler = async (event) => {
   const msg = {
     to: recipient,
     // Once we authenticate your domain, we will change this email address
-    from: 'gregorymettam@gmail.com', 
+    from: 'greg@mettams.com.au', 
     subject: `New Instruction Sheet Submission - #${payload.number}`,
     html: htmlBody,
   };
