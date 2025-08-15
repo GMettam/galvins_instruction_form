@@ -16,22 +16,19 @@ exports.handler = async (event) => {
   const payload = JSON.parse(event.body).payload;
   const formData = payload.data;
 
-  // --- NEW: LOGIC TO FETCH AND ATTACH FILES ---
   let attachments = [];
   if (payload.files && payload.files.length > 0) {
-    // Use Promise.all to handle all file downloads asynchronously
     attachments = await Promise.all(
       payload.files.map(async (file) => {
         try {
-          // Fetch the file from the URL Netlify provides
           const response = await fetch(file.url);
           if (!response.ok) {
             console.error(`Failed to download file: ${file.filename}`);
-            return null; // Skip this file if download fails
+            return null;
           }
-          // Convert the file to a Base64 string for SendGrid
-          const fileBuffer = await response.arrayBuffer();
-          const content = Buffer.from(fileBuffer).toString('base64');
+          // --- THIS IS THE CORRECTED LINE ---
+          const fileBuffer = await response.buffer(); 
+          const content = fileBuffer.toString('base64');
           
           return {
             content: content,
@@ -45,10 +42,8 @@ exports.handler = async (event) => {
         }
       })
     );
-    // Filter out any files that failed to process
     attachments = attachments.filter(att => att !== null);
   }
-  // --- END OF NEW ATTACHMENT LOGIC ---
 
   const fieldMapping = {
     amount: 'Amount ($)', 'claim_type[]': 'Claim Type', debt_incurred_date: 'Debt incurred from',
@@ -120,7 +115,7 @@ exports.handler = async (event) => {
     from: 'greg@mettams.com.au',
     subject: `New Instruction Sheet Submission - #${payload.number}`,
     html: htmlBody,
-    attachments: attachments, // <-- NEW: Add the attachments array
+    attachments: attachments,
   };
   
   try {
