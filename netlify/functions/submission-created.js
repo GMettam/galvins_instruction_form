@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);
@@ -26,8 +28,7 @@ exports.handler = async (event) => {
             console.error(`Failed to download file: ${file.filename}`);
             return null;
           }
-          // --- THIS IS THE CORRECTED LINE ---
-          const fileBuffer = await response.buffer(); 
+          const fileBuffer = await response.buffer();
           const content = fileBuffer.toString('base64');
           
           return {
