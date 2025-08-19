@@ -1,4 +1,122 @@
-<!DOCTYPE html>
+Amount ($) *:
+$10,000.00
+
+Claim Type:
+goods_sold
+
+Debt incurred from:
+2025-08-05
+
+Details of Goods Sold e.g., Invoice numbers, description of goods:
+
+
+Details of Debt Incurred e.g., Loan agreement, service rendered:
+
+
+Other Claim Type Please specify details:
+
+
+Account No.:
+
+
+Debtor Type:
+sole_proprietor
+
+Full Name * Enter Full Name:
+Joe Bloggs
+
+Mobile Phone * Enter Mobile Number:
+
+
+Email Address * Enter Email Address:
+
+
+ACN/ABN Enter ACN/ABN:
+
+
+Home Address * Enter Home Address:
+
+
+Partnership Name * Enter Partnership Name:
+
+
+Contact Phone * Enter Contact Number:
+
+
+Partners' Names * List all partners:
+
+
+Business Address * Enter Business Address:
+
+
+Company Name * Enter Company Name:
+
+
+Registered Office * Enter Registered Office:
+
+
+Guarantor(s) Names * List all guarantor names:
+
+
+Phone Number(s) List phone numbers:
+
+
+Guarantor(s) Addresses * List all guarantor addresses:
+
+
+Email Address(es) List email addresses:
+
+
+Action:
+demand_letter
+
+Demand Letter Days:
+
+
+Demand Letter Details Send to debtor(s) and/or guarantor(s) at the following street address(es) and/or email address(es):
+
+
+Property Details for Caveat Provide Title Reference, Lot/Plan, address:
+
+
+Details for Issuing Summons Provide any specific details required:
+
+
+Other Action Details Please specify the action required:
+
+
+Document Type:
+
+
+Guarantee & Indemnity Details e.g., Date signed, parties involved:
+
+
+Invoice / Statement Details e.g., Invoice numbers, dates:
+
+
+Account Application Details e.g., Date of application:
+
+
+Other Document Please specify document type:
+
+
+Attachments:
+https://d33wubrfki0l68.cloudfront.net/a6463636-fc55-4640-84e4-811dcf6775d1/SharePoint%20&%20Teams%20Structure.pdf
+
+Comments Please provide any additional information or special instructions...:
+
+
+Signature *:
+Greg
+
+Date *:
+2025-08-19
+
+Send to *:
+other
+
+Send To Other:
+greg@mettams.com.au<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -560,20 +678,50 @@
             </div>
         </div>
 	
-	    <div class="form-content">
-			
-            <form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
+		<div class="form-content">
+  
+	<form name="galvins-form"
+      method="POST"
+      action="/.netlify/functions/submission-created"
+      enctype="multipart/form-data">
+  <!-- Honeypot -->
+  <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+  
+  <!-- All your form fields go here (e.g., Amount, Claim Type, etc.) -->
 		
-                <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+		
+  <div class="form-section">
+    <h2 class="section-title">Claim Details</h2>
+    <!-- ... your labels, inputs, etc. ... -->
+  </div>
+  
+  
 
-						
-		        <div class="form-section">
-                    <h2 class="section-title">Claim Details</h2>
-                    <div class="claim-details-grid">
-                        <label for="amount">Amount ($) *</label>
-                        <label class="grid-span-3">Claim Type</label>
-                        <label for="debt_incurred_date">Debt incurred from</label>
-
+			
+			
+			
+	
+    
+    <!-- Your form sections and fields -->
+    <div class="form-section">
+      <h2 class="section-title">Claim Details</h2>
+      <div class="claim-details-grid">
+        <label for="amount">Amount ($) *</label>
+        <input type="text" id="amount" name="amount" required>
+        
+        <label class="grid-span-3">Claim Type</label>
+        <!-- Add radio/checkbox inputs for claim types here, e.g.: -->
+        <input type="radio" name="claim_type" value="goods_sold"> Goods Sold
+        <input type="radio" name="claim_type" value="debt_incurred"> Debt Incurred
+        <input type="radio" name="claim_type" value="other"> Other
+        
+        <label for="debt_incurred_date">Debt incurred from</label>
+        <input type="date" id="debt_incurred_date" name="debt_incurred_date">
+        
+        <!-- Add all other fields from your form, e.g.: -->
+        <label for="goods_details">Details of Goods Sold (e.g., Invoice numbers, description)</label>
+        <textarea id="goods_details" name="goods_details"></textarea>
+        
                         <input id="amount" name="amount" type="number" step="0.01" required />
                         <label class="checkbox-item">
                             <input id="goodsSoldCheck" name="claim_type[]" type="checkbox" value="goods_sold" />
@@ -878,10 +1026,14 @@
                         <input id="send_to_other" name="send_to_other" placeholder="Enter recipient email address..." style="display: none; margin-top: 10px;" type="text"/>
                     </div>
                 </div>
-                <button class="submit-btn" type="submit">Submit Instruction Sheet</button>
+                
+				<button class="submit-btn" type="submit">Submit Instruction Sheet</button>
                 <button class="reset-btn" type="button">Reset Form</button>
-            </form>
-			
+
+				<button type="submit">Submit Instruction Sheet</button>
+
+				</form>
+
         </div>
     </div>
     <button class="print-btn" id="printButton">Print Form</button>
