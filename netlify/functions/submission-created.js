@@ -1,8 +1,39 @@
  
 // --- Helper Libraries ---
+
 const sgMail = require('@sendgrid/mail');
 const formidable = require('formidable');
-// ... Set up and use formidable instead ...
+
+exports.handler = async (event) => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  // Decode the Base64 body from Netlify event
+  const buf = Buffer.from(event.body, event.isBase64Encoded ? 'base64' : 'utf8');
+
+  // Emulate an HTTP request for formidable
+  const mockReq = require('stream').Readable.from(buf);
+  mockReq.headers = event.headers;
+  mockReq.method = event.httpMethod;
+
+  const form = new formidable.IncomingForm();
+  return new Promise((resolve, reject) => {
+    form.parse(mockReq, (err, fields, files) => {
+      if (err) {
+        return resolve({
+          statusCode: 400,
+          body: JSON.stringify({ error: 'Failed to parse form' })
+        });
+      }
+      // fields: your parsed form fields
+      // files: attachments
+      // your SendGrid logic comes here...
+      resolve({
+        statusCode: 200,
+        body: JSON.stringify({ fields, files })
+      });
+    });
+  });
+};
 
 // --- Main Function ---
 exports.handler = async (event) => {
