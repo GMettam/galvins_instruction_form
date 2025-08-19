@@ -1,6 +1,6 @@
 {
   "dependencies": {
     "@sendgrid/mail": "^8.1.5",
-    "lambda-multipart-parser": "^1.0.1"
+    "formidable": "^3.5.4"
   }
 }
