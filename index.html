@@ -560,15 +560,14 @@
             </div>
         </div>
 	
-	<div class="form-content">
+	    <div class="form-content">
 			
-		<form name="galvins-form" enctype="multipart/form-data">
+            <form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
 		
-	<p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+                <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
 
-		
-		
-						<div class="form-section">
+						
+		        <div class="form-section">
                     <h2 class="section-title">Claim Details</h2>
                     <div class="claim-details-grid">
                         <label for="amount">Amount ($) *</label>
@@ -840,18 +839,19 @@
                             <label for="doc_other_details"><span class="label-main">Other Document</span> <span class="label-prompt">Please specify document type</span></label>
                         </div>
                     </div>
-									
-					<div class="form-section">
-    <h2 class="section-title">Upload Documents</h2>
-    <div class="file-upload-area" id="fileUploadArea">
-        <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
-        <div class="file-upload-icon">📁</div>
-        <div class="file-upload-text">Drag & drop files here</div>
-        <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
-        <ul class="file-list" id="fileList"></ul>
-    </div>
-</div>				
-					<div class="form-section">
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label>Upload Documents</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">Drag & drop files here</div>
+                            <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
+                            <ul class="file-list" id="fileList"></ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
                     <h2 class="section-title">Additional Information</h2>
                     <div class="form-group form-group-float">
                         <textarea id="comments" name="comments" placeholder=" "></textarea>
@@ -885,7 +885,6 @@
         </div>
     </div>
     <button class="print-btn" id="printButton">Print Form</button>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- FORM ELEMENTS ---
@@ -1079,45 +1078,8 @@
             fileUploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
             fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
         });
-		
-		// --- NEW: FORM SUBMISSION LOGIC ---
-            form.addEventListener('submit', async (event) => {
-                event.preventDefault(); // Stop the browser from submitting the form normally
-
-                const submitButton = form.querySelector('.submit-btn');
-                const originalButtonText = submitButton.textContent;
-                submitButton.disabled = true;
-                submitButton.textContent = 'Submitting...';
-
-                // Create a FormData object from the form, which handles files correctly
-                const formData = new FormData(form);
-
-                try {
-                    // Send the data to our Netlify Function
-                    const response = await fetch('/.netlify/functions/submission-created', {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    if (response.ok) {
-                        // If the function returns success, redirect to the success page
-                        window.location.href = '/success.html';
-                    } else {
-                        // If the function returns an error, show an alert
-                        const errorText = await response.text();
-                        alert(`Submission failed: ${errorText}`);
-                        submitButton.disabled = false;
-                        submitButton.textContent = originalButtonText;
-                    }
-                } catch (error) {
-                    // Handle network errors
-                    console.error('Submission network error:', error);
-                    alert('An error occurred. Please try again.');
-                    submitButton.disabled = false;
-                    submitButton.textContent = originalButtonText;
-                }
-            });
-			
-		    </script>
+    </script>
 </body>
 </html>
+}
+I'm ready.
