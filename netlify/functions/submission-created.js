@@ -1,7 +1,8 @@
  
 // --- Helper Libraries ---
 const sgMail = require('@sendgrid/mail');
-const parser = require('lambda-multipart-parser');
+const formidable = require('formidable');
+// ... Set up and use formidable instead ...
 
 // --- Main Function ---
 exports.handler = async (event) => {
