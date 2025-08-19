@@ -562,7 +562,7 @@
 	
 	<div class="form-content">
 			
-    <form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
+		<form name="galvins-form" enctype="multipart/form-data">
 		
 	<p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
 
@@ -1079,6 +1079,45 @@
             fileUploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
             fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
         });
-    </script>
+		
+		// --- NEW: FORM SUBMISSION LOGIC ---
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault(); // Stop the browser from submitting the form normally
+
+                const submitButton = form.querySelector('.submit-btn');
+                const originalButtonText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+
+                // Create a FormData object from the form, which handles files correctly
+                const formData = new FormData(form);
+
+                try {
+                    // Send the data to our Netlify Function
+                    const response = await fetch('/.netlify/functions/submission-created', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (response.ok) {
+                        // If the function returns success, redirect to the success page
+                        window.location.href = '/success.html';
+                    } else {
+                        // If the function returns an error, show an alert
+                        const errorText = await response.text();
+                        alert(`Submission failed: ${errorText}`);
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalButtonText;
+                    }
+                } catch (error) {
+                    // Handle network errors
+                    console.error('Submission network error:', error);
+                    alert('An error occurred. Please try again.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalButtonText;
+                }
+            });
+			
+		    </script>
 </body>
 </html>
