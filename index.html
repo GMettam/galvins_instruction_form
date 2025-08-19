@@ -564,31 +564,11 @@
 			
     <form name="galvins-form" netlify netlify-honeypot="bot-field" enctype="multipart/form-data">
 		
-        <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+	<p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
 
-        <div class="form-group" style="margin-top: 20px;">
-       
-		</div>
-   
-	<label>Upload Documents</label>
-    <div class="file-upload-area" id="fileUploadArea">
-        <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
-        <div class="file-upload-icon">📁</div>
-        <div class="file-upload-text">Drag & drop files here</div>
-        <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
-        <ul class="file-list" id="fileList"></ul>
-    </div>
-</div>
-   	
-	<input type="hidden" name="_timezone" value="Australia/Perth">
-        <input type="hidden" name="_template" value="table">
-                
-        <div class="form-group" style="margin-top: 20px;">
-    <label for="attachment">Upload Documents</label>
-    <input type="file" id="attachment" name="attachment" multiple>
-</div>        
-			
-				<div class="form-section">
+		
+		
+						<div class="form-section">
                     <h2 class="section-title">Claim Details</h2>
                     <div class="claim-details-grid">
                         <label for="amount">Amount ($) *</label>
@@ -860,13 +840,18 @@
                             <label for="doc_other_details"><span class="label-main">Other Document</span> <span class="label-prompt">Please specify document type</span></label>
                         </div>
                     </div>
-					
-					<div class="form-group" style="margin-top: 20px;">
-   					 <label for="attachment">Upload Documents</label>
- 				   <input type="file" id="attachment" name="attachment" multiple>
-				</div>
-
-                <div class="form-section">
+									
+					<div class="form-section">
+    <h2 class="section-title">Upload Documents</h2>
+    <div class="file-upload-area" id="fileUploadArea">
+        <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
+        <div class="file-upload-icon">📁</div>
+        <div class="file-upload-text">Drag & drop files here</div>
+        <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
+        <ul class="file-list" id="fileList"></ul>
+    </div>
+</div>				
+					<div class="form-section">
                     <h2 class="section-title">Additional Information</h2>
                     <div class="form-group form-group-float">
                         <textarea id="comments" name="comments" placeholder=" "></textarea>
