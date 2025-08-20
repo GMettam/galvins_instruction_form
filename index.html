@@ -1,122 +1,4 @@
-Amount ($) *:
-$10,000.00
-
-Claim Type:
-goods_sold
-
-Debt incurred from:
-2025-08-05
-
-Details of Goods Sold e.g., Invoice numbers, description of goods:
-
-
-Details of Debt Incurred e.g., Loan agreement, service rendered:
-
-
-Other Claim Type Please specify details:
-
-
-Account No.:
-
-
-Debtor Type:
-sole_proprietor
-
-Full Name * Enter Full Name:
-Joe Bloggs
-
-Mobile Phone * Enter Mobile Number:
-
-
-Email Address * Enter Email Address:
-
-
-ACN/ABN Enter ACN/ABN:
-
-
-Home Address * Enter Home Address:
-
-
-Partnership Name * Enter Partnership Name:
-
-
-Contact Phone * Enter Contact Number:
-
-
-Partners' Names * List all partners:
-
-
-Business Address * Enter Business Address:
-
-
-Company Name * Enter Company Name:
-
-
-Registered Office * Enter Registered Office:
-
-
-Guarantor(s) Names * List all guarantor names:
-
-
-Phone Number(s) List phone numbers:
-
-
-Guarantor(s) Addresses * List all guarantor addresses:
-
-
-Email Address(es) List email addresses:
-
-
-Action:
-demand_letter
-
-Demand Letter Days:
-
-
-Demand Letter Details Send to debtor(s) and/or guarantor(s) at the following street address(es) and/or email address(es):
-
-
-Property Details for Caveat Provide Title Reference, Lot/Plan, address:
-
-
-Details for Issuing Summons Provide any specific details required:
-
-
-Other Action Details Please specify the action required:
-
-
-Document Type:
-
-
-Guarantee & Indemnity Details e.g., Date signed, parties involved:
-
-
-Invoice / Statement Details e.g., Invoice numbers, dates:
-
-
-Account Application Details e.g., Date of application:
-
-
-Other Document Please specify document type:
-
-
-Attachments:
-https://d33wubrfki0l68.cloudfront.net/a6463636-fc55-4640-84e4-811dcf6775d1/SharePoint%20&%20Teams%20Structure.pdf
-
-Comments Please provide any additional information or special instructions...:
-
-
-Signature *:
-Greg
-
-Date *:
-2025-08-19
-
-Send to *:
-other
-
-Send To Other:
-greg@mettams.com.au<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -429,7 +311,6 @@ greg@mettams.com.au<!DOCTYPE html>
             position: relative;
             top: -4px;
         }
-
         .inline-checkbox-item .checkbox-part {
             display: flex;
             align-items: center;
@@ -596,7 +477,6 @@ greg@mettams.com.au<!DOCTYPE html>
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-
         @media (max-width: 768px) {
             body { padding: 10px; }
             .form-content { padding: 20px 15px; }
@@ -677,52 +557,16 @@ greg@mettams.com.au<!DOCTYPE html>
                 <div class="header-text"><h1>Instruction Sheet</h1></div>
             </div>
         </div>
-	
-		<div class="form-content">
-  
-	<form name="galvins-form"
-      method="POST"
-      action="/.netlify/functions/submission-created"
-      enctype="multipart/form-data">
-  <!-- Honeypot -->
-  <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
-  
-  <!-- All your form fields go here (e.g., Amount, Claim Type, etc.) -->
-		
-		
-  <div class="form-section">
-    <h2 class="section-title">Claim Details</h2>
-    <!-- ... your labels, inputs, etc. ... -->
-  </div>
-  
-  
-
-			
-			
-			
-	
-    
-    <!-- Your form sections and fields -->
-    <div class="form-section">
-      <h2 class="section-title">Claim Details</h2>
-      <div class="claim-details-grid">
-        <label for="amount">Amount ($) *</label>
-        <input type="text" id="amount" name="amount" required>
-        
-        <label class="grid-span-3">Claim Type</label>
-        <!-- Add radio/checkbox inputs for claim types here, e.g.: -->
-        <input type="radio" name="claim_type" value="goods_sold"> Goods Sold
-        <input type="radio" name="claim_type" value="debt_incurred"> Debt Incurred
-        <input type="radio" name="claim_type" value="other"> Other
-        
-        <label for="debt_incurred_date">Debt incurred from</label>
-        <input type="date" id="debt_incurred_date" name="debt_incurred_date">
-        
-        <!-- Add all other fields from your form, e.g.: -->
-        <label for="goods_details">Details of Goods Sold (e.g., Invoice numbers, description)</label>
-        <textarea id="goods_details" name="goods_details"></textarea>
-        
+        <div class="form-content">
+            <form name="galvins-form" method="POST" action="/.netlify/functions/submission-created" enctype="multipart/form-data">
+                <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+                
+                <div class="form-section">
+                    <h2 class="section-title">Claim Details</h2>
+                    <div class="claim-details-grid">
+                        <label for="amount">Amount ($) *</label>
                         <input id="amount" name="amount" type="number" step="0.01" required />
+                        <label class="grid-span-3">Claim Type</label>
                         <label class="checkbox-item">
                             <input id="goodsSoldCheck" name="claim_type[]" type="checkbox" value="goods_sold" />
                             <span>Goods sold</span>
@@ -735,6 +579,7 @@ greg@mettams.com.au<!DOCTYPE html>
                             <input id="claimOtherCheck" name="claim_type[]" type="checkbox" value="other" />
                             <span>Other</span>
                         </label>
+                        <label for="debt_incurred_date">Debt incurred from</label>
                         <input id="debt_incurred_date" name="debt_incurred_date" type="date" />
                     </div>
                     <div class="form-group" id="goods_sold_details_container" style="display: none;">
@@ -761,9 +606,8 @@ greg@mettams.com.au<!DOCTYPE html>
                     <h2 class="section-title">Debtor Information</h2>
                     <div class="debtor-info-grid">
                         <label for="account_no">Account No.</label>
-                        <label>Debtor Type</label>
-
                         <input type="text" id="account_no" name="account_no">
+                        <label>Debtor Type</label>
                         <div class="radio-group compact">
                             <label class="radio-item"><input type="radio" name="debtor_type" value="sole_proprietor" id="radio_sole_proprietor">Sole Proprietor</label>
                             <label class="radio-item"><input type="radio" name="debtor_type" value="partnership" id="radio_partnership">Partnership</label>
@@ -776,90 +620,88 @@ greg@mettams.com.au<!DOCTYPE html>
                         <h3 class="conditional-title">Sole Proprietor Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_full_name" name="sp_full_name" type="text" placeholder=" "/>
+                                <input id="sp_full_name" name="sp_full_name" type="text" placeholder=" " required>
                                 <label for="sp_full_name"><span class="label-main">Full Name *</span> <span class="label-prompt">Enter Full Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="sp_mobile" name="sp_mobile" type="tel" placeholder=" "/>
+                                <input id="sp_mobile" name="sp_mobile" type="tel" placeholder=" " required>
                                 <label for="sp_mobile"><span class="label-main">Mobile Phone *</span> <span class="label-prompt">Enter Mobile Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_email" name="sp_email" type="email" placeholder=" "/>
+                                <input id="sp_email" name="sp_email" type="email" placeholder=" " required>
                                 <label for="sp_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
-                                <input id="sp_acn_abn" name="sp_acn_abn" type="text" placeholder=" "/>
+                                <input id="sp_acn_abn" name="sp_acn_abn" type="text" placeholder=" ">
                                 <label for="sp_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="sp_home_address" name="sp_home_address" placeholder=" "></textarea>
+                            <textarea id="sp_home_address" name="sp_home_address" placeholder=" " required></textarea>
                             <label for="sp_home_address"><span class="label-main">Home Address *</span> <span class="label-prompt">Enter Home Address</span></label>
                         </div>
                     </div>
-
                     <div id="partnership_fields" class="conditional-fields">
                         <h3 class="conditional-title">Partnership Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="p_partnership_name" name="p_partnership_name" type="text" placeholder=" "/>
+                                <input id="p_partnership_name" name="p_partnership_name" type="text" placeholder=" " required>
                                 <label for="p_partnership_name"><span class="label-main">Partnership Name *</span> <span class="label-prompt">Enter Partnership Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="p_contact_phone" name="p_contact_phone" type="tel" placeholder=" "/>
+                                <input id="p_contact_phone" name="p_contact_phone" type="tel" placeholder=" " required>
                                 <label for="p_contact_phone"><span class="label-main">Contact Phone *</span> <span class="label-prompt">Enter Contact Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="p_email" name="p_email" type="email" placeholder=" "/>
+                                <input id="p_email" name="p_email" type="email" placeholder=" " required>
                                 <label for="p_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
-                                <input id="p_acn_abn" name="p_acn_abn" type="text" placeholder=" "/>
+                                <input id="p_acn_abn" name="p_acn_abn" type="text" placeholder=" ">
                                 <label for="p_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="p_partners_names" name="p_partners_names" placeholder=" "></textarea>
+                            <textarea id="p_partners_names" name="p_partners_names" placeholder=" " required></textarea>
                             <label for="p_partners_names"><span class="label-main">Partners' Names *</span> <span class="label-prompt">List all partners</span></label>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="p_business_address" name="p_business_address" placeholder=" "></textarea>
+                            <textarea id="p_business_address" name="p_business_address" placeholder=" " required></textarea>
                             <label for="p_business_address"><span class="label-main">Business Address *</span> <span class="label-prompt">Enter Business Address</span></label>
                         </div>
                     </div>
-
                     <div id="company_fields" class="conditional-fields">
                         <h3 class="conditional-title">Company Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_company_name" name="c_company_name" type="text" placeholder=" "/>
+                                <input id="c_company_name" name="c_company_name" type="text" placeholder=" " required>
                                 <label for="c_company_name"><span class="label-main">Company Name *</span> <span class="label-prompt">Enter Company Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="c_contact_phone" name="c_contact_phone" type="tel" placeholder=" "/>
+                                <input id="c_contact_phone" name="c_contact_phone" type="tel" placeholder=" " required>
                                 <label for="c_contact_phone"><span class="label-main">Contact Phone *</span> <span class="label-prompt">Enter Contact Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_email" name="c_email" type="email" placeholder=" "/>
+                                <input id="c_email" name="c_email" type="email" placeholder=" " required>
                                 <label for="c_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="c_acn_abn" name="c_acn_abn" type="text" placeholder=" "/>
+                                <input id="c_acn_abn" name="c_acn_abn" type="text" placeholder=" ">
                                 <label for="c_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="c_business_address" name="c_business_address" placeholder=" "></textarea>
+                            <textarea id="c_business_address" name="c_business_address" placeholder=" " required></textarea>
                             <label for="c_business_address"><span class="label-main">Business Address *</span> <span class="label-prompt">Enter Business Address</span></label>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="c_registered_office" name="c_registered_office" placeholder=" "></textarea>
+                            <textarea id="c_registered_office" name="c_registered_office" placeholder=" " required></textarea>
                             <label for="c_registered_office"><span class="label-main">Registered Office *</span> <span class="label-prompt">Enter Registered Office</span></label>
                         </div>
                     </div>
@@ -868,7 +710,7 @@ greg@mettams.com.au<!DOCTYPE html>
                         <h3 class="conditional-title">Guarantor(s) Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_names" name="g_guarantor_names" placeholder=" "></textarea>
+                                <textarea id="g_guarantor_names" name="g_guarantor_names" placeholder=" " required></textarea>
                                 <label for="g_guarantor_names"><span class="label-main">Guarantor(s) Names *</span> <span class="label-prompt">List all guarantor names</span></label>
                             </div>
                             <div class="form-group form-group-float">
@@ -878,7 +720,7 @@ greg@mettams.com.au<!DOCTYPE html>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_addresses" name="g_guarantor_addresses" placeholder=" "></textarea>
+                                <textarea id="g_guarantor_addresses" name="g_guarantor_addresses" placeholder=" " required></textarea>
                                 <label for="g_guarantor_addresses"><span class="label-main">Guarantor(s) Addresses *</span> <span class="label-prompt">List all guarantor addresses</span></label>
                             </div>
                             <div class="form-group form-group-float">
@@ -942,13 +784,12 @@ greg@mettams.com.au<!DOCTYPE html>
                         </div>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h2 class="section-title">Required Documents</h2>
                     <div id="required-docs-group" class="checkbox-group">
                         <label class="checkbox-item">
                             <input id="guaranteeCheck" name="document_type[]" type="checkbox" value="guarantee_indemnity"/>
-                            <span>Guarantee & Indemnity</span>
+                            <span>Guarantee &amp; Indemnity</span>
                         </label>
                         <label class="checkbox-item">
                             <input id="invoiceCheck" name="document_type[]" type="checkbox" value="invoice_statement"/>
@@ -966,7 +807,7 @@ greg@mettams.com.au<!DOCTYPE html>
                     <div id="guarantee_details_container" style="display: none; margin-top: 15px;">
                         <div class="form-group-float">
                             <textarea id="guarantee_details" name="guarantee_details" placeholder=" "></textarea>
-                            <label for="guarantee_details"><span class="label-main">Guarantee & Indemnity Details</span> <span class="label-prompt">e.g., Date signed, parties involved</span></label>
+                            <label for="guarantee_details"><span class="label-main">Guarantee &amp; Indemnity Details</span> <span class="label-prompt">e.g., Date signed, parties involved</span></label>
                         </div>
                     </div>
                     <div id="invoice_details_container" style="display: none; margin-top: 15px;">
@@ -992,13 +833,13 @@ greg@mettams.com.au<!DOCTYPE html>
                         <div class="file-upload-area" id="fileUploadArea">
                             <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
                             <div class="file-upload-icon">📁</div>
-                            <div class="file-upload-text">Drag & drop files here</div>
+                            <div class="file-upload-text">Drag &amp; drop files here</div>
                             <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
                             <ul class="file-list" id="fileList"></ul>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-section">
                     <h2 class="section-title">Additional Information</h2>
                     <div class="form-group form-group-float">
@@ -1008,16 +849,16 @@ greg@mettams.com.au<!DOCTYPE html>
                     <div class="form-row signature-row">
                         <div class="form-group">
                             <label for="signature">Signature *</label>
-                            <input id="signature" name="signature" placeholder="Type your full name" required="" type="text"/>
+                            <input id="signature" name="signature" placeholder="Type your full name" required type="text"/>
                         </div>
                         <div class="form-group">
                             <label for="date">Date *</label>
-                            <input id="date" name="date" required="" type="date"/>
+                            <input id="date" name="date" required type="date"/>
                         </div>
                     </div>
                     <div class="form-group form-group-spaced">
                         <label for="send_to">Send to *</label>
-                        <select id="send_to" name="send_to" required="">
+                        <select id="send_to" name="send_to" required>
                             <option value="">Select recipient...</option>
                             <option value="darlene.carpenter@mccabeswa.com.au">Darlene Carpenter - darlene.carpenter@mccabeswa.com.au</option>
                             <option value="natasha.beech@mccabeswa.com.au">Natasha Beech - natasha.beech@mccabeswa.com.au</option>
@@ -1026,17 +867,13 @@ greg@mettams.com.au<!DOCTYPE html>
                         <input id="send_to_other" name="send_to_other" placeholder="Enter recipient email address..." style="display: none; margin-top: 10px;" type="text"/>
                     </div>
                 </div>
-                
-				<button class="submit-btn" type="submit">Submit Instruction Sheet</button>
+                <button class="submit-btn" type="submit">Submit Instruction Sheet</button>
                 <button class="reset-btn" type="button">Reset Form</button>
-
-				<button type="submit">Submit Instruction Sheet</button>
-
-				</form>
-
+            </form>
         </div>
     </div>
     <button class="print-btn" id="printButton">Print Form</button>
+    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- FORM ELEMENTS ---
@@ -1056,7 +893,6 @@ greg@mettams.com.au<!DOCTYPE html>
                 'company': document.getElementById('company_fields'),
                 'guarantor': document.getElementById('guarantor_fields')
             };
-
             const conditionalCheckboxContainers = {
                 'goodsSoldCheck': document.getElementById('goods_sold_details_container'),
                 'debtIncurredCheck': document.getElementById('debt_incurred_details_container'),
@@ -1100,8 +936,6 @@ greg@mettams.com.au<!DOCTYPE html>
                 textarea.addEventListener('input', () => autoResize(textarea));
                 autoResize(textarea); 
             });
-
-
             // --- CONDITIONAL LOGIC ---
             document.querySelectorAll('input[name="debtor_type"]').forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -1231,7 +1065,26 @@ greg@mettams.com.au<!DOCTYPE html>
             fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
         });
     </script>
+    <script>
+    document.querySelector('form[name="galvins-form"]').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
+      fetch('/.netlify/functions/submission-created', {
+        method: 'POST',
+        body: formData
+      }).then(res => {
+        if (res.redirected) {
+          window.location.href = res.url;
+        } else if (res.status === 302) {
+          window.location.href = '/success.html';
+        } else {
+          window.location.href = '/error.html';
+        }
+      }).catch(() => {
+        window.location.href = '/error.html';
+      });
+    });
+    </script>
 </body>
 </html>
-}
-I'm ready.
