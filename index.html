@@ -80,13 +80,11 @@
         .form-group {
             margin-bottom: 16px;
         }
-        
-        .form-group-spaced {
-            margin-top: 24px;
-        }
 
+        /* Styles for floating labels */
         .form-group-float {
             position: relative;
+            margin-bottom: 16px;
         }
         
         .form-group-float label {
@@ -106,12 +104,8 @@
             white-space: nowrap;
         }
 
-        .form-group-float label.allow-wrap {
-            white-space: normal;
-        }
-
         .form-group-float textarea + label {
-            top: 24px;
+            top: calc(50% - 5px);
         }
 
         .form-group-float input:focus + label,
@@ -147,13 +141,21 @@
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 20px;
+            margin-bottom: 0;
+        }
+        
+        #sole_proprietor_fields .form-row,
+        #partnership_fields .form-row,
+        #company_fields .form-row,
+        #guarantor_fields .form-row {
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 0;
         }
         
         .form-row .form-group {
             margin-bottom: 0;
         }
-
         .signature-row {
             grid-template-columns: 1fr 180px;
         }
@@ -202,8 +204,8 @@
         }
         
         textarea {
+            min-height: 48px;
             resize: vertical;
-            overflow-y: hidden;
         }
 
         input:focus,
@@ -214,10 +216,25 @@
             box-shadow: 0 0 0 1px rgba(102, 126, 234, 0.3);
         }
 
+        input[type="text"]:hover,
+        input[type="email"]:hover,
+        input[type="number"]:hover,
+        input[type="date"]:hover,
+        textarea:hover,
+        select:hover {
+            border-color: #667eea;
+        }
+        
+        .radio-item input[type="radio"]:focus {
+            box-shadow: none;
+        }
+
+        #acn_abn {
+            width: 150px;
+        }
+        
         #account_no {
             width: 150px;
-            position: relative;
-            top: -4px;
         }
 
         .radio-group {
@@ -249,12 +266,10 @@
             transition: all 0.3s ease;
             cursor: pointer;
             min-height: 48px;
-            white-space: nowrap;
         }
 
         .checkbox-item:hover,
-        .radio-item:hover,
-        .inline-checkbox-item:hover {
+        .radio-item:hover {
             border-color: #667eea;
         }
 
@@ -267,36 +282,7 @@
             accent-color: #667eea;
             flex-shrink: 0;
         }
-        
-        .radio-item input[type="radio"]:focus {
-            box-shadow: none;
-            outline: none;
-        }
 
-        .debtor-info-grid {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 8px 20px;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        
-        .debtor-info-grid .radio-group.compact {
-            display: grid;
-            grid-template-columns: repeat(4, auto);
-            gap: 15px;
-            margin-top: 0;
-            justify-content: start;
-        }
-        
-        .action-required-grid {
-            display: grid;
-            grid-template-columns: repeat(4, auto);
-            gap: 15px;
-            align-items: center;
-            justify-content: start;
-        }
-        
         .inline-checkbox-item {
             display: flex;
             flex-direction: row;
@@ -307,15 +293,20 @@
             border-radius: 6px;
             border: 1px solid #ccc;
             transition: all 0.3s ease;
+            margin-bottom: 0;
             height: 48px;
             position: relative;
             top: -4px;
+            cursor: pointer;
+        }
+
+        .inline-checkbox-item:hover {
+            border-color: #667eea;
         }
         .inline-checkbox-item .checkbox-part {
             display: flex;
             align-items: center;
             flex-shrink: 0;
-            cursor: pointer;
         }
         
         .inline-checkbox-item .input-part {
@@ -324,6 +315,16 @@
         
         .inline-checkbox-item.fixed-input .input-part {
             flex-grow: 0;
+        }
+
+        .inline-checkbox-item .input-part input,
+        .inline-checkbox-item .input-part textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            min-height: 40px;
         }
         
         .days-input-wrapper {
@@ -339,61 +340,61 @@
             padding: 6px 8px;
             font-size: 14px;
         }
+
+        .debtor-info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 20px;
+            align-items: start;
+            margin-bottom: 16px;
+        }
+        
+
+        .debtor-info-grid > label {
+            margin-bottom: 0;
+            align-self: end;
+        }
+        
+        .debtor-info-grid .radio-group.compact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 0;
+        }
+        
+        .action-required-grid {
+            display: grid;
+            grid-template-columns: repeat(4, auto);
+            gap: 15px;
+            align-items: center;
+            justify-content: start;
+        }
         
         .file-upload-area {
             border: 2px dashed #667eea;
             border-radius: 10px;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
             background: #f8f9fa;
             cursor: pointer;
             position: relative;
         }
         
+        .file-upload-area:hover {
+            background-color: #e9ecef;
+        }
+
         .file-upload-icon { font-size: 2rem; margin-bottom: 10px; color: #667eea; }
         .file-upload-text { font-size: 1rem; margin-bottom: 5px; color: #2c3e50; font-weight: 600; }
         .file-upload-subtext { color: #666; font-size: 0.9rem; }
-        .file-input { display: none; }
-        
-        .file-list {
-            margin-top: 20px;
-            padding: 0;
-            list-style: none;
-            text-align: left;
-        }
-        .file-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px;
-            background: white;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #e1e8ed;
-            gap: 10px;
-        }
-        .file-item:last-child {
-            margin-bottom: 0;
-        }
-        .file-info {
-            display: flex;
-            align-items: center;
-            flex: 1;
-            min-width: 0;
-        }
-        .file-name {
-            font-weight: 600;
-            word-break: break-all;
-        }
-        .remove-file {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
+        .file-input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+        .file-list { margin-top: 15px; padding: 0; list-style: none; }
+        .file-item { display: flex; align-items: center; justify-content: space-between; padding: 10px; background: white; border-radius: 6px; margin-bottom: 8px; border: 1px solid #e1e8ed; gap: 10px; }
+        .file-info { display: flex; align-items: center; flex: 1; min-width: 200px; }
+        .file-icon { margin-right: 10px; color: #667eea; }
+        .file-name { font-weight: 600; word-break: break-word; }
+        .file-size { color: #666; font-size: 0.9rem; margin-left: 10px; }
+        .remove-file { background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer; font-size: 0.8rem; }
         
         .submit-btn, .reset-btn {
             border: none;
@@ -424,12 +425,25 @@
             margin-top: 10px;
         }
 
+        .reset-btn:hover {
+            background: #e9ecef;
+        }
+
+        
         .reset-btn.is-resetting {
             background: #28a745;
             color: white;
             border-color: #28a745;
         }
         
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .form-content { padding: 20px 15px; }
+            .form-section { padding: 20px 15px; }
+            .form-row, .debtor-info-grid, .claim-details-grid, .action-required-grid { grid-template-columns: 1fr; }
+        }
+    
+        /* Conditional Fields Styling */
         .conditional-fields {
             margin-top: 20px;
             padding: 20px;
@@ -438,20 +452,9 @@
             border: 1px solid rgba(102, 126, 234, 0.15);
             transition: all 0.3s ease-in-out;
             opacity: 0;
-            display: none;
         }
 
-        .conditional-fields > .form-row {
-            margin-bottom: 16px;
-        }
-        
-        .conditional-fields > .form-row:last-of-type,
-        .conditional-fields > .form-group:last-of-type {
-            margin-bottom: 0;
-        }
-        
         .conditional-fields.show {
-            display: block;
             opacity: 1;
         }
 
@@ -464,6 +467,160 @@
             padding-bottom: 5px;
         }
 
+        .conditional-fields .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .conditional-fields > .form-row {
+            margin-bottom: 16px;
+        }
+        
+        .conditional-fields > .form-row:last-of-type,
+        .conditional-fields > .form-group:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .conditional-fields textarea {
+            min-height: 48px;
+            resize: vertical;
+        }
+
+        /* Enhanced radio button styling */
+        .radio-group.compact {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .radio-item {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .radio-item:hover {
+            color: #667eea;
+        }
+
+        .radio-item input[type="radio"] {
+            margin-right: 8px;
+            transform: scale(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .conditional-fields {
+                padding: 15px;
+                margin-top: 15px;
+            }
+
+            .radio-group.compact {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        /* Print-specific styles */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                font-size: 12pt;
+            }
+            
+            .form-container {
+                max-width: 100% !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .form-header {
+                background: white !important;
+                color: black !important;
+                border-bottom: 2px solid #333 !important;
+                padding: 10px 0 !important;
+            }
+            
+            .form-section {
+                page-break-inside: avoid;
+                break-inside: avoid;
+                background: white !important;
+                border-left: none !important;
+                padding: 15px 0 !important;
+                margin-bottom: 20px !important;
+            }
+            
+            .conditional-fields {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                opacity: 1 !important;
+            }
+            
+            .checkbox-item, .radio-item, .inline-checkbox-item {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+            
+            .file-upload-area {
+                display: none !important;
+            }
+            
+            .file-list {
+                display: block !important;
+            }
+            
+            .file-item {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+            
+            .submit-btn, .reset-btn {
+                display: none !important;
+            }
+            
+            input, textarea, select {
+                background: white !important;
+                border: 1px solid #999 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .form-group-float label {
+                color: #666 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            [style*="display: none"] {
+                display: none !important;
+            }
+            
+            .conditional-fields:not([style*="display: none"]) {
+                display: block !important;
+                opacity: 1 !important;
+            }
+            
+            .form-section {
+                page-break-after: auto;
+            }
+            
+            h2.section-title {
+                page-break-after: avoid;
+            }
+            
+            * {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* Print button styling */
         .print-btn {
             position: fixed;
             bottom: 20px;
@@ -477,75 +634,15 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .form-content { padding: 20px 15px; }
-            .form-section { padding: 20px 15px; }
-            .form-row, .debtor-info-grid, .claim-details-grid, .action-required-grid, .radio-group, .checkbox-group, #required-docs-group { grid-template-columns: 1fr; }
-            .debtor-info-grid .radio-group.compact { flex-direction: column; gap: 10px; }
-            .conditional-fields { padding: 15px; margin-top: 15px; }
+        
+        .print-btn:hover {
+            background: #45a049;
         }
-
+        
         @media print {
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            body {
-                background: #fff !important;
-                color: #000 !important;
-                padding: 0 !important;
-                font-size: 10pt;
-            }
-            
-            .form-container {
-                transform: scale(0.9);
-                transform-origin: top left;
-                width: 111%;
-                max-width: 100% !important;
-                box-shadow: none !important;
-                border: none !important;
-                background: #fff !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .form-section {
-                border-left: none !important;
-                border-top: 1px solid #ccc;
-                padding: 15px 0 !important;
-                margin-bottom: 20px !important;
-                page-break-inside: avoid;
-            }
-            .form-section:first-of-type {
-                border-top: none;
-            }
-            
-            .print-btn, .submit-btn, .reset-btn, .file-upload-area {
+            .print-btn {
                 display: none !important;
             }
-            
-            .claim-details-grid { grid-template-columns: 145px auto auto auto 1fr !important; }
-            .debtor-info-grid { grid-template-columns: auto 1fr !important; }
-            .form-row { grid-template-columns: 1fr 1fr !important; }
-            .action-required-grid, .debtor-info-grid .radio-group.compact { grid-template-columns: repeat(4, auto) !important; }
-            #required-docs-group { grid-template-columns: repeat(4, auto) !important; }
-            .radio-group { grid-template-columns: 1fr 1fr !important; }
-
-            .form-group-float { padding-top: 15px; }
-            .form-group-float label {
-                top: 0 !important;
-                left: 0 !important;
-                transform: none !important;
-                position: relative !important;
-                font-weight: bold !important;
-                white-space: normal !important;
-                font-size: 10pt !important;
-                color: #000 !important;
-                margin-bottom: 5px;
-            }
-            .form-group-float label .label-prompt { display: none !important; }
         }
     </style>
 </head>
@@ -558,46 +655,47 @@
             </div>
         </div>
         <div class="form-content">
-            <form name="galvins-form" method="POST" action="/.netlify/functions/submission-created" enctype="multipart/form-data">
-                <p style="display: none;"><label>Don’t fill this out if you’re human: <input name="bot-field"></label></p>
+            <form action="/.netlify/functions/submission-created" method="POST" enctype="multipart/form-data" name="galvins-form">
+                <p style="display: none;"><label>Don't fill this out if you're human: <input name="bot-field"/></label></p>
                 
                 <div class="form-section">
                     <h2 class="section-title">Claim Details</h2>
                     <div class="claim-details-grid">
                         <label for="amount">Amount ($) *</label>
-                        <input id="amount" name="amount" type="number" step="0.01" required />
                         <label class="grid-span-3">Claim Type</label>
+                        <label for="debt_incurred_date">Debt incurred from</label>
+
+                        <input id="amount" name="amount" type="number" step="0.01" required />
                         <label class="checkbox-item">
-                            <input id="goodsSoldCheck" name="claim_type[]" type="checkbox" value="goods_sold" />
+                            <input id="goodsSoldCheck" name="claim_type" type="checkbox" value="goods_sold" />
                             <span>Goods sold</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="debtIncurredCheck" name="claim_type[]" type="checkbox" value="debt_incurred" />
+                            <input id="debtIncurredCheck" name="claim_type" type="checkbox" value="debt_incurred" />
                             <span>Debt incurred</span>
                         </label>
                         <label class="checkbox-item">
-                            <input id="claimOtherCheck" name="claim_type[]" type="checkbox" value="other" />
+                            <input id="claimOtherCheck" name="claim_type" type="checkbox" value="other" />
                             <span>Other</span>
                         </label>
-                        <label for="debt_incurred_date">Debt incurred from</label>
                         <input id="debt_incurred_date" name="debt_incurred_date" type="date" />
                     </div>
                     <div class="form-group" id="goods_sold_details_container" style="display: none;">
                         <div class="form-group-float">
-                            <textarea id="goods_sold_details" name="goods_sold_details" placeholder=" "></textarea>
-                            <label for="goods_sold_details"><span class="label-main">Details of Goods Sold</span> <span class="label-prompt">e.g., Invoice numbers, description of goods</span></label>
+                            <textarea id="goods_sold_details" name="goods_sold_details" placeholder=" " rows="2"></textarea>
+                            <label for="goods_sold_details"><span class="label-main">Details of Goods Sold</span><span class="label-prompt">e.g., Invoice numbers, description of goods</span></label>
                         </div>
                     </div>
                     <div class="form-group" id="debt_incurred_details_container" style="display: none;">
                         <div class="form-group-float">
-                            <textarea id="debt_incurred_details" name="debt_incurred_details" placeholder=" "></textarea>
-                            <label for="debt_incurred_details"><span class="label-main">Details of Debt Incurred</span> <span class="label-prompt">e.g., Loan agreement, service rendered</span></label>
+                            <textarea id="debt_incurred_details" name="debt_incurred_details" placeholder=" " rows="2"></textarea>
+                            <label for="debt_incurred_details"><span class="label-main">Details of Debt Incurred</span><span class="label-prompt">e.g., Loan agreement, service rendered</span></label>
                         </div>
                     </div>
                     <div class="form-group" id="claim_other_details_container" style="display: none;">
                         <div class="form-group-float">
-                            <textarea id="claim_other_details" name="claim_other_details" placeholder=" "></textarea>
-                            <label for="claim_other_details"><span class="label-main">Other Claim Type</span> <span class="label-prompt">Please specify details</span></label>
+                            <textarea id="claim_other_details" name="claim_other_details" placeholder=" " rows="2"></textarea>
+                            <label for="claim_other_details"><span class="label-main">Other Claim Type</span><span class="label-prompt">Please specify details</span></label>
                         </div>
                     </div>
                 </div>
@@ -606,8 +704,8 @@
                     <h2 class="section-title">Debtor Information</h2>
                     <div class="debtor-info-grid">
                         <label for="account_no">Account No.</label>
-                        <input type="text" id="account_no" name="account_no">
                         <label>Debtor Type</label>
+                        <input type="text" id="account_no" name="account_no">
                         <div class="radio-group compact">
                             <label class="radio-item"><input type="radio" name="debtor_type" value="sole_proprietor" id="radio_sole_proprietor">Sole Proprietor</label>
                             <label class="radio-item"><input type="radio" name="debtor_type" value="partnership" id="radio_partnership">Partnership</label>
@@ -615,236 +713,233 @@
                             <label class="radio-item"><input type="radio" name="debtor_type" value="guarantor" id="radio_guarantor">Guarantor(s)</label>
                         </div>
                     </div>
-
-                    <div id="sole_proprietor_fields" class="conditional-fields">
+                    <div id="sole_proprietor_fields" class="conditional-fields" style="display: none;">
                         <h3 class="conditional-title">Sole Proprietor Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_full_name" name="sp_full_name" type="text" placeholder=" " required>
-                                <label for="sp_full_name"><span class="label-main">Full Name *</span> <span class="label-prompt">Enter Full Name</span></label>
+                                <input id="sp_full_name" name="sp_full_name" type="text" placeholder=" " required/>
+                                <label for="sp_full_name"><span class="label-main">Full Name *</span><span class="label-prompt">Enter Full Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="sp_mobile" name="sp_mobile" type="tel" placeholder=" " required>
-                                <label for="sp_mobile"><span class="label-main">Mobile Phone *</span> <span class="label-prompt">Enter Mobile Number</span></label>
+                                <input id="sp_mobile" name="sp_mobile" type="tel" placeholder=" " required/>
+                                <label for="sp_mobile"><span class="label-main">Mobile Phone *</span><span class="label-prompt">Enter Mobile Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_email" name="sp_email" type="email" placeholder=" " required>
-                                <label for="sp_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
+                                <input id="sp_email" name="sp_email" type="email" placeholder=" " required/>
+                                <label for="sp_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
-                                <input id="sp_acn_abn" name="sp_acn_abn" type="text" placeholder=" ">
-                                <label for="sp_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
+                                <input id="sp_acn_abn" name="sp_acn_abn" type="text" placeholder=" "/>
+                                <label for="sp_acn_abn"><span class="label-main">ACN/ABN</span><span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="sp_home_address" name="sp_home_address" placeholder=" " required></textarea>
-                            <label for="sp_home_address"><span class="label-main">Home Address *</span> <span class="label-prompt">Enter Home Address</span></label>
+                            <textarea id="sp_home_address" name="sp_home_address" placeholder=" " required rows="2"></textarea>
+                            <label for="sp_home_address"><span class="label-main">Home Address *</span><span class="label-prompt">Enter Home Address</span></label>
                         </div>
                     </div>
-                    <div id="partnership_fields" class="conditional-fields">
+
+                    <div id="partnership_fields" class="conditional-fields" style="display: none;">
                         <h3 class="conditional-title">Partnership Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="p_partnership_name" name="p_partnership_name" type="text" placeholder=" " required>
-                                <label for="p_partnership_name"><span class="label-main">Partnership Name *</span> <span class="label-prompt">Enter Partnership Name</span></label>
+                                <input id="p_partnership_name" name="p_partnership_name" type="text" placeholder=" " required/>
+                                <label for="p_partnership_name"><span class="label-main">Partnership Name *</span><span class="label-prompt">Enter Partnership Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="p_contact_phone" name="p_contact_phone" type="tel" placeholder=" " required>
-                                <label for="p_contact_phone"><span class="label-main">Contact Phone *</span> <span class="label-prompt">Enter Contact Number</span></label>
+                                <input id="p_contact_phone" name="p_contact_phone" type="tel" placeholder=" " required/>
+                                <label for="p_contact_phone"><span class="label-main">Contact Phone *</span><span class="label-prompt">Enter Contact Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="p_email" name="p_email" type="email" placeholder=" " required>
-                                <label for="p_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
+                                <input id="p_email" name="p_email" type="email" placeholder=" " required/>
+                                <label for="p_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
-                                <input id="p_acn_abn" name="p_acn_abn" type="text" placeholder=" ">
-                                <label for="p_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
+                                <input id="p_acn_abn" name="p_acn_abn" type="text" placeholder=" "/>
+                                <label for="p_acn_abn"><span class="label-main">ACN/ABN</span><span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="p_partners_names" name="p_partners_names" placeholder=" " required></textarea>
-                            <label for="p_partners_names"><span class="label-main">Partners' Names *</span> <span class="label-prompt">List all partners</span></label>
+                            <textarea id="p_partners_names" name="p_partners_names" placeholder=" " required rows="2"></textarea>
+                            <label for="p_partners_names"><span class="label-main">Partners' Names *</span><span class="label-prompt">List all partners</span></label>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="p_business_address" name="p_business_address" placeholder=" " required></textarea>
-                            <label for="p_business_address"><span class="label-main">Business Address *</span> <span class="label-prompt">Enter Business Address</span></label>
+                            <textarea id="p_business_address" name="p_business_address" placeholder=" " required rows="2"></textarea>
+                            <label for="p_business_address"><span class="label-main">Business Address *</span><span class="label-prompt">Enter Business Address</span></label>
                         </div>
                     </div>
-                    <div id="company_fields" class="conditional-fields">
+
+                    <div id="company_fields" class="conditional-fields" style="display: none;">
                         <h3 class="conditional-title">Company Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_company_name" name="c_company_name" type="text" placeholder=" " required>
-                                <label for="c_company_name"><span class="label-main">Company Name *</span> <span class="label-prompt">Enter Company Name</span></label>
+                                <input id="c_company_name" name="c_company_name" type="text" placeholder=" " required/>
+                                <label for="c_company_name"><span class="label-main">Company Name *</span><span class="label-prompt">Enter Company Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="c_contact_phone" name="c_contact_phone" type="tel" placeholder=" " required>
-                                <label for="c_contact_phone"><span class="label-main">Contact Phone *</span> <span class="label-prompt">Enter Contact Number</span></label>
+                                <input id="c_contact_phone" name="c_contact_phone" type="tel" placeholder=" " required/>
+                                <label for="c_contact_phone"><span class="label-main">Contact Phone *</span><span class="label-prompt">Enter Contact Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_email" name="c_email" type="email" placeholder=" " required>
-                                <label for="c_email"><span class="label-main">Email Address *</span> <span class="label-prompt">Enter Email Address</span></label>
+                                <input id="c_email" name="c_email" type="email" placeholder=" " required/>
+                                <label for="c_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="c_acn_abn" name="c_acn_abn" type="text" placeholder=" ">
-                                <label for="c_acn_abn"><span class="label-main">ACN/ABN</span> <span class="label-prompt">Enter ACN/ABN</span></label>
+                                <input id="c_acn_abn" name="c_acn_abn" type="text" placeholder=" "/>
+                                <label for="c_acn_abn"><span class="label-main">ACN/ABN</span><span class="label-prompt">Enter ACN/ABN</span></label>
                             </div>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="c_business_address" name="c_business_address" placeholder=" " required></textarea>
-                            <label for="c_business_address"><span class="label-main">Business Address *</span> <span class="label-prompt">Enter Business Address</span></label>
+                            <textarea id="c_business_address" name="c_business_address" placeholder=" " required rows="2"></textarea>
+                            <label for="c_business_address"><span class="label-main">Business Address *</span><span class="label-prompt">Enter Business Address</span></label>
                         </div>
                         <div class="form-group form-group-float">
-                            <textarea id="c_registered_office" name="c_registered_office" placeholder=" " required></textarea>
-                            <label for="c_registered_office"><span class="label-main">Registered Office *</span> <span class="label-prompt">Enter Registered Office</span></label>
+                            <textarea id="c_registered_office" name="c_registered_office" placeholder=" " required rows="2"></textarea>
+                            <label for="c_registered_office"><span class="label-main">Registered Office *</span><span class="label-prompt">Enter Registered Office</span></label>
                         </div>
                     </div>
-
-                    <div id="guarantor_fields" class="conditional-fields">
+                    <div id="guarantor_fields" class="conditional-fields" style="display: none;">
                         <h3 class="conditional-title">Guarantor(s) Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_names" name="g_guarantor_names" placeholder=" " required></textarea>
-                                <label for="g_guarantor_names"><span class="label-main">Guarantor(s) Names *</span> <span class="label-prompt">List all guarantor names</span></label>
+                                <textarea id="g_guarantor_names" name="g_guarantor_names" placeholder=" " required rows="2"></textarea>
+                                <label for="g_guarantor_names"><span class="label-main">Guarantor(s) Names *</span><span class="label-prompt">List all guarantor names</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_phones" name="g_guarantor_phones" placeholder=" "></textarea>
-                                <label for="g_guarantor_phones"><span class="label-main">Phone Number(s)</span> <span class="label-prompt">List phone numbers</span></label>
+                                <textarea id="g_guarantor_phones" name="g_guarantor_phones" placeholder=" " rows="2"></textarea>
+                                <label for="g_guarantor_phones"><span class="label-main">Phone Number(s)</span><span class="label-prompt">List phone numbers</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_addresses" name="g_guarantor_addresses" placeholder=" " required></textarea>
-                                <label for="g_guarantor_addresses"><span class="label-main">Guarantor(s) Addresses *</span> <span class="label-prompt">List all guarantor addresses</span></label>
+                                <textarea id="g_guarantor_addresses" name="g_guarantor_addresses" placeholder=" " required rows="2"></textarea>
+                                <label for="g_guarantor_addresses"><span class="label-main">Guarantor(s) Addresses *</span><span class="label-prompt">List all guarantor addresses</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <textarea id="g_guarantor_emails" name="g_guarantor_emails" placeholder=" "></textarea>
-                                <label for="g_guarantor_emails"><span class="label-main">Email Address(es)</span> <span class="label-prompt">List email addresses</span></label>
+                                <textarea id="g_guarantor_emails" name="g_guarantor_emails" placeholder=" " rows="2"></textarea>
+                                <label for="g_guarantor_emails"><span class="label-main">Email Address(es)</span><span class="label-prompt">List email addresses</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h2 class="section-title">Action Required</h2>
+                    <div class="form-group">
+                        <div class="action-required-grid">
+                            <div class="inline-checkbox-item fixed-input">
+                                <div class="checkbox-part">
+                                    <input id="demandLetterCheck" name="action" type="checkbox" value="demand_letter"/>
+                                    <span>Demand Letter</span>
+                                </div>
+                                <div class="input-part">
+                                    <div class="days-input-wrapper">
+                                        <input id="demand_letter_days" min="1" max="99" name="demand_letter_days" placeholder="e.g. 7" type="number"/>
+                                        <span>days</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="checkbox-item">
+                                <input id="registerCaveatCheck" name="action" type="checkbox" value="register_caveat"/>
+                                <span>Register Caveat/s</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input id="issueSummonsCheck" name="action" type="checkbox" value="issue_summons"/>
+                                <span>Issue Summons</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input id="actionOtherCheck" name="action" type="checkbox" value="other_action"/>
+                                <span>Other</span>
+                            </label>
+                        </div>
+                        <div class="form-group" id="register_caveat_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="caveat_details" name="caveat_details" placeholder=" " rows="3"></textarea>
+                                <label for="caveat_details"><span class="label-main">Property Details for Caveat</span><span class="label-prompt">Provide Title Reference, Lot/Plan, address</span></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="issue_summons_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="issue_summons_details" name="issue_summons_details" placeholder=" " rows="3"></textarea>
+                                <label for="issue_summons_details"><span class="label-main">Details for Issuing Summons</span><span class="label-prompt">Provide any specific details required</span></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="action_other_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="action_other_details" name="action_other_details" placeholder=" " rows="2"></textarea>
+                                <label for="action_other_details"><span class="label-main">Other Action Details</span><span class="label-prompt">Please specify the action required</span></label>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <h2 class="section-title">Action Required</h2>
-                    <div class="action-required-grid">
-                        <div class="inline-checkbox-item fixed-input">
-                            <div class="checkbox-part">
-                                <input id="demandLetterCheck" name="action[]" type="checkbox" value="demand_letter"/>
-                                <span>Demand Letter</span>
-                            </div>
-                            <div class="input-part">
-                                <div class="days-input-wrapper">
-                                    <input id="demand_letter_days" min="1" max="99" name="demand_letter_days" placeholder="e.g. 7" type="number"/>
-                                    <span>days</span>
-                                </div>
-                            </div>
-                        </div>
-                        <label class="checkbox-item">
-                            <input id="registerCaveatCheck" name="action[]" type="checkbox" value="register_caveat"/>
-                            <span>Register Caveat/s</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input id="issueSummonsCheck" name="action[]" type="checkbox" value="issue_summons"/>
-                            <span>Issue Summons</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input id="actionOtherCheck" name="action[]" type="checkbox" value="other_action"/>
-                            <span>Other</span>
-                        </label>
-                    </div>
-                    <div id="demand_letter_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="demand_letter_details" name="demand_letter_details" placeholder=" "></textarea>
-                            <label for="demand_letter_details" class="allow-wrap"><span class="label-main">Demand Letter Details</span> <span class="label-prompt">Send to debtor(s) and/or guarantor(s) at the following street address(es) and/or email address(es):</span></label>
-                        </div>
-                    </div>
-                    <div id="register_caveat_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="caveat_details" name="caveat_details" placeholder=" "></textarea>
-                            <label for="caveat_details"><span class="label-main">Property Details for Caveat</span> <span class="label-prompt">Provide Title Reference, Lot/Plan, address</span></label>
-                        </div>
-                    </div>
-                    <div id="issue_summons_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="issue_summons_details" name="issue_summons_details" placeholder=" "></textarea>
-                            <label for="issue_summons_details"><span class="label-main">Details for Issuing Summons</span> <span class="label-prompt">Provide any specific details required</span></label>
-                        </div>
-                    </div>
-                    <div id="action_other_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="action_other_details" name="action_other_details" placeholder=" "></textarea>
-                            <label for="action_other_details"><span class="label-main">Other Action Details</span> <span class="label-prompt">Please specify the action required</span></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-section">
                     <h2 class="section-title">Required Documents</h2>
-                    <div id="required-docs-group" class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input id="guaranteeCheck" name="document_type[]" type="checkbox" value="guarantee_indemnity"/>
-                            <span>Guarantee &amp; Indemnity</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input id="invoiceCheck" name="document_type[]" type="checkbox" value="invoice_statement"/>
-                            <span>Invoice / Statement</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input id="applicationCheck" name="document_type[]" type="checkbox" value="account_application"/>
-                            <span>Account Application</span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input id="docOtherCheck" name="document_type[]" type="checkbox" value="other_doc"/>
-                            <span>Other</span>
-                        </label>
-                    </div>
-                    <div id="guarantee_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="guarantee_details" name="guarantee_details" placeholder=" "></textarea>
-                            <label for="guarantee_details"><span class="label-main">Guarantee &amp; Indemnity Details</span> <span class="label-prompt">e.g., Date signed, parties involved</span></label>
+                    <div class="form-group">
+                        <div class="checkbox-group" id="required-docs-group">
+                            <label class="checkbox-item">
+                                <input id="guaranteeCheck" name="document_type" type="checkbox" value="guarantee_indemnity"/>
+                                <span>Guarantee &amp; Indemnity</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input id="invoiceCheck" name="document_type" type="checkbox" value="invoice_statement"/>
+                                <span>Invoice / Statement</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input id="applicationCheck" name="document_type" type="checkbox" value="account_application"/>
+                                <span>Account Application</span>
+                            </label>
+                            <label class="checkbox-item">
+                                <input id="docOtherCheck" name="document_type" type="checkbox" value="other_doc"/>
+                                <span>Other</span>
+                            </label>
+                        </div>
+                        <div class="form-group" id="guarantee_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="guarantee_details" name="guarantee_details" placeholder=" " rows="2"></textarea>
+                                <label for="guarantee_details"><span class="label-main">Guarantee &amp; Indemnity Details</span><span class="label-prompt">e.g., Date signed, parties involved</span></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="invoice_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="invoice_details" name="invoice_details" placeholder=" " rows="2"></textarea>
+                                <label for="invoice_details"><span class="label-main">Invoice / Statement Details</span><span class="label-prompt">e.g., Invoice numbers, dates</span></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="application_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="application_details" name="application_details" placeholder=" " rows="2"></textarea>
+                                <label for="application_details"><span class="label-main">Account Application Details</span><span class="label-prompt">e.g., Date of application</span></label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="doc_other_details_container" style="display: none; margin-top: 15px;">
+                            <div class="form-group-float">
+                                <textarea id="doc_other_details" name="doc_other_details" placeholder=" " rows="2"></textarea>
+                                <label for="doc_other_details"><span class="label-main">Other Document</span><span class="label-prompt">Please specify document type</span></label>
+                            </div>
                         </div>
                     </div>
-                    <div id="invoice_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="invoice_details" name="invoice_details" placeholder=" "></textarea>
-                            <label for="invoice_details"><span class="label-main">Invoice / Statement Details</span> <span class="label-prompt">e.g., Invoice numbers, dates</span></label>
-                        </div>
-                    </div>
-                    <div id="application_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="application_details" name="application_details" placeholder=" "></textarea>
-                            <label for="application_details"><span class="label-main">Account Application Details</span> <span class="label-prompt">e.g., Date of application</span></label>
-                        </div>
-                    </div>
-                    <div id="doc_other_details_container" style="display: none; margin-top: 15px;">
-                        <div class="form-group-float">
-                            <textarea id="doc_other_details" name="doc_other_details" placeholder=" "></textarea>
-                            <label for="doc_other_details"><span class="label-main">Other Document</span> <span class="label-prompt">Please specify document type</span></label>
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-top: 20px;">
+                    <div class="form-group">
                         <label>Upload Documents</label>
                         <div class="file-upload-area" id="fileUploadArea">
-                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
                             <div class="file-upload-icon">📁</div>
                             <div class="file-upload-text">Drag &amp; drop files here</div>
                             <div class="file-upload-subtext">or click to browse (PDF, DOC, DOCX, JPG, PNG)</div>
-                            <ul class="file-list" id="fileList"></ul>
+                            <input accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="file-input" id="fileInput" name="attachments[]" type="file" multiple/>
                         </div>
+                        <ul class="file-list" id="fileList"></ul>
                     </div>
                 </div>
-
                 <div class="form-section">
                     <h2 class="section-title">Additional Information</h2>
-                    <div class="form-group form-group-float">
-                        <textarea id="comments" name="comments" placeholder=" "></textarea>
-						<label for="comments"><span class="label-main">Comments</span> <span class="label-prompt">Please provide any additional information or special instructions...</span></label>
+                    <div class="form-group">
+                        <label for="comments">Comments</label>
+                        <textarea id="comments" name="comments" placeholder="Please provide any additional information or special instructions..." rows="2"></textarea>
                     </div>
                     <div class="form-row signature-row">
                         <div class="form-group">
@@ -856,7 +951,7 @@
                             <input id="date" name="date" required type="date"/>
                         </div>
                     </div>
-                    <div class="form-group form-group-spaced">
+                    <div class="form-group">
                         <label for="send_to">Send to *</label>
                         <select id="send_to" name="send_to" required>
                             <option value="">Select recipient...</option>
@@ -873,7 +968,6 @@
         </div>
     </div>
     <button class="print-btn" id="printButton">Print Form</button>
-    
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- FORM ELEMENTS ---
@@ -884,139 +978,125 @@
             const fileUploadArea = document.getElementById('fileUploadArea');
             const fileInput = document.getElementById('fileInput');
             const fileList = document.getElementById('fileList');
-            const allTextareas = document.querySelectorAll('textarea');
-            const debtorRadios = document.querySelectorAll('input[name="debtor_type"]');
+            const radioButtons = document.querySelectorAll('input[name="debtor_type"]');
             
-            const conditionalRadioSections = {
+            // --- CONSTANTS & STATE ---
+            const formKey = 'galvins-form-data';
+            let uploadedFiles = new Map();
+            const conditionalSections = {
                 'sole_proprietor': document.getElementById('sole_proprietor_fields'),
                 'partnership': document.getElementById('partnership_fields'),
                 'company': document.getElementById('company_fields'),
                 'guarantor': document.getElementById('guarantor_fields')
             };
-            const conditionalCheckboxContainers = {
-                'goodsSoldCheck': document.getElementById('goods_sold_details_container'),
-                'debtIncurredCheck': document.getElementById('debt_incurred_details_container'),
-                'claimOtherCheck': document.getElementById('claim_other_details_container'),
-                'demandLetterCheck': document.getElementById('demand_letter_details_container'),
-                'registerCaveatCheck': document.getElementById('register_caveat_details_container'),
-                'issueSummonsCheck': document.getElementById('issue_summons_details_container'),
-                'actionOtherCheck': document.getElementById('action_other_details_container'),
-                'guaranteeCheck': document.getElementById('guarantee_details_container'),
-                'invoiceCheck': document.getElementById('invoice_details_container'),
-                'applicationCheck': document.getElementById('application_details_container'),
-                'docOtherCheck': document.getElementById('doc_other_details_container')
-            };
 
-            // --- RADIO BUTTON TOGGLE LOGIC ---
-            debtorRadios.forEach(radio => {
-                let wasChecked = false;
-                radio.addEventListener('mousedown', () => {
-                    wasChecked = radio.checked;
-                });
-                radio.addEventListener('click', () => {
-                    if (wasChecked) {
-                        radio.checked = false;
-                        radio.dispatchEvent(new Event('change', { bubbles: true }));
+            // --- DEBTOR TYPE CONDITIONAL LOGIC ---
+            function hideAllSections() {
+                Object.values(conditionalSections).forEach(section => {
+                    if (section) {
+                        section.style.display = 'none';
+                        section.classList.remove('show');
+                        section.setAttribute('aria-hidden', 'true');
+                        const fields = section.querySelectorAll('input, textarea, select');
+                        fields.forEach(field => {
+                            field.disabled = true;
+                            field.removeAttribute('required');
+                        });
                     }
                 });
-            });
-            
-            // --- AUTO-EXPANDING TEXTAREA LOGIC ---
-            const autoResize = (textarea) => {
-                textarea.style.height = 'auto';
-                if (textarea.value.trim() === '' && textarea.placeholder.trim() === '') {
-                    textarea.style.height = '48px';
-                } else {
-                    const newHeight = Math.max(textarea.scrollHeight, 48); 
-                    textarea.style.height = newHeight + 'px';
-                }
-            };
+            }
 
-            allTextareas.forEach(textarea => {
-                textarea.addEventListener('input', () => autoResize(textarea));
-                autoResize(textarea); 
-            });
-            // --- CONDITIONAL LOGIC ---
-            document.querySelectorAll('input[name="debtor_type"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    Object.values(conditionalRadioSections).forEach(section => {
-                        if (section) section.classList.remove('show');
+            function showSection(sectionKey) {
+                const section = conditionalSections[sectionKey];
+                if (section) {
+                    section.style.display = 'block';
+                    section.setAttribute('aria-hidden', 'false');
+                    setTimeout(() => section.classList.add('show'), 10);
+                    const fields = section.querySelectorAll('input, textarea, select');
+                    fields.forEach(field => {
+                        field.disabled = false;
+                        if (field.hasAttribute('data-required') || (field.labels && Array.from(field.labels).some(l => l.innerText.includes('*')))) {
+                            field.setAttribute('required', 'required');
+                        }
                     });
-                    if (this.checked && conditionalRadioSections[this.value]) {
-                        conditionalRadioSections[this.value].classList.add('show');
+                    const firstField = section.querySelector('input, textarea');
+                    if (firstField) setTimeout(() => firstField.focus(), 300);
+                }
+            }
+
+            // --- SAVE/LOAD FORM DATA (LOCALSTORAGE) ---
+            function saveFormData() {
+                const data = {};
+                form.querySelectorAll('input:not([type="file"]), textarea, select').forEach(el => {
+                    if (el.name) {
+                        if (el.type === 'radio') {
+                            if (el.checked) data[el.name] = el.value;
+                        } else if (el.type === 'checkbox') {
+                            data[el.name + '_' + el.value] = el.checked;
+                        } else {
+                            data[el.name] = el.value;
+                        }
                     }
                 });
-            });
+                localStorage.setItem(formKey, JSON.stringify(data));
+            }
+            function loadFormData() {
+                const savedData = localStorage.getItem(formKey);
+                if (!savedData) return;
+                const data = JSON.parse(savedData);
+                form.querySelectorAll('input:not([type="file"]), textarea, select').forEach(el => {
+                    if (el.name) {
+                        if (el.type === 'radio') {
+                            if (data[el.name] === el.value) el.checked = true;
+                        } else if (el.type === 'checkbox') {
+                             if (data[el.name + '_' + el.value]) el.checked = true;
+                        } else {
+                             if(data[el.name]) el.value = data[el.name];
+                        }
+                    }
+                });
+            }
 
-            Object.keys(conditionalCheckboxContainers).forEach(checkboxId => {
+            // --- CORE & HELPER FUNCTIONS ---
+            function forceResetAppearance() {
+                form.querySelectorAll('textarea').forEach(textarea => {
+                    const computedStyle = getComputedStyle(textarea);
+                    textarea.style.height = computedStyle.minHeight;
+                    textarea.style.overflow = '';
+                });
+            }
+            
+            function setupConditionalContainer(checkboxId, containerId) {
                 const checkbox = document.getElementById(checkboxId);
-                const container = conditionalCheckboxContainers[checkboxId];
-                if (checkbox && container) {
-                    const toggle = () => { container.style.display = checkbox.checked ? 'block' : 'none'; };
-                    checkbox.addEventListener('change', toggle);
-                    toggle();
-                }
-            });
-
-            // --- RESET BUTTON LOGIC ---
-            resetButton.addEventListener('click', function() {
-                form.reset(); 
-                document.getElementById('date').value = '';
-
-                form.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(input => {
-                    input.checked = false;
-                    input.dispatchEvent(new Event('change', { bubbles: true }));
-                });
-                
-                document.getElementById('send_to_other').style.display = 'none';
-
-                allTextareas.forEach(textarea => {
-                    setTimeout(() => autoResize(textarea), 0);
-                });
-                
-                resetButton.disabled = true;
-                resetButton.classList.add('is-resetting');
-                resetButton.textContent = 'Form Cleared!';
-                setTimeout(() => {
-                    resetButton.classList.remove('is-resetting');
-                    resetButton.textContent = 'Reset Form';
-                    resetButton.disabled = false;
-                }, 1500);
-            });
-
-            // --- OTHER LISTENERS ---
-            printButton.addEventListener('click', () => window.print());
-
-            document.getElementById('send_to').addEventListener('change', function() {
-                const otherField = document.getElementById('send_to_other');
-                otherField.style.display = this.value === 'other' ? 'block' : 'none';
-                otherField.required = this.value === 'other';
-            });
-
-            amountInput.addEventListener('blur', function() {
-                if (this.value) {
-                    const value = parseFloat(this.value.replace(/[^0-9.-]+/g, ""));
-                    if (!isNaN(value)) {
-                        this.type = 'text';
-                        this.value = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(value);
+                const container = document.getElementById(containerId);
+                if (!checkbox || !container) return;
+                const input = container.querySelector('input, textarea');
+                const toggleVisibility = () => {
+                    if (checkbox.checked) {
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                        if (input) input.value = '';
                     }
-                }
-            });
+                };
+                checkbox.addEventListener('change', toggleVisibility);
+                toggleVisibility(); 
+            }
 
-            amountInput.addEventListener('focus', function() {
-                if(this.value) {
-                    const unformattedValue = this.value.replace(/[^0-9.-]+/g, "");
-                    this.type = 'number';
-                    this.value = unformattedValue;
-                }
-            });
-
-            document.getElementById('date').valueAsDate = new Date();
+            function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const i = Math.floor(Math.log(bytes) / Math.log(1024));
+                return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + ['Bytes', 'KB', 'MB', 'GB'][i];
+            }
 
             // --- FILE UPLOAD LOGIC ---
-            let uploadedFiles = new Map();
             function handleFiles(files) {
                 [...files].forEach(file => {
+                    const isTooLarge = file.size > 10 * 1024 * 1024;
+                    if (isTooLarge) {
+                        alert(`${file.name} is too large (max 10MB).`);
+                        return;
+                    }
                     if (!uploadedFiles.has(file.name)) {
                         uploadedFiles.set(file.name, file);
                         displayFile(file);
@@ -1028,11 +1108,10 @@
             function displayFile(file) {
                 const fileItem = document.createElement('li');
                 fileItem.className = 'file-item';
-                fileItem.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span class="file-name">${file.name}</span></div><button type="button" class="remove-file">Remove</button>`;
+                fileItem.dataset.fileName = file.name;
+                fileItem.innerHTML = `<div class="file-info"><span class="file-icon">📄</span><span class="file-name">${file.name}</span><span class="file-size">(${formatFileSize(file.size)})</span></div><button type="button" class="remove-file">Remove</button>`;
                 fileList.appendChild(fileItem);
-                
-                fileItem.querySelector('.remove-file').addEventListener('click', (e) => {
-                    e.stopPropagation(); 
+                fileItem.querySelector('.remove-file').addEventListener('click', () => {
                     uploadedFiles.delete(file.name);
                     fileItem.remove();
                     updateFileInput();
@@ -1045,46 +1124,145 @@
                 fileInput.files = dt.files;
             }
 
-            fileUploadArea.addEventListener('click', (e) => {
-                if (!e.target.closest('.file-item')) {
-                    fileInput.click();
+            // --- PRINT FUNCTIONALITY ---
+            function prepareForPrint() {
+                // Show all conditional fields that have data
+                document.querySelectorAll('.conditional-fields').forEach(section => {
+                    const inputs = section.querySelectorAll('input, textarea, select');
+                    const hasData = Array.from(inputs).some(input => {
+                        return input.value && input.value.trim() !== '';
+                    });
+                    
+                    if (hasData) {
+                        section.style.display = 'block';
+                        section.classList.add('show');
+                    }
+                });
+                
+                // Show all details containers that are checked
+                document.querySelectorAll('[id$="_details_container"]').forEach(container => {
+                    const checkboxId = container.id.replace('_details_container', 'Check');
+                    const checkbox = document.getElementById(checkboxId);
+                    if (checkbox && checkbox.checked) {
+                        container.style.display = 'block';
+                    }
+                });
+            }
+
+            // --- EVENT LISTENERS ---
+            form.addEventListener('input', saveFormData);
+            form.addEventListener('change', saveFormData);
+            resetButton.addEventListener('click', function() {
+                form.reset();
+                localStorage.removeItem(formKey);
+                hideAllSections();
+                document.querySelectorAll('.radio-item, .checkbox-item').forEach(item => item.style.borderColor = '');
+                document.getElementById('send_to_other').style.display = 'none';
+                document.querySelectorAll('[id$="_details_container"]').forEach(c => c.style.display = 'none');
+                setTimeout(forceResetAppearance, 10);
+                
+                resetButton.disabled = true;
+                resetButton.classList.add('is-resetting');
+                resetButton.textContent = 'Form Cleared!';
+                setTimeout(() => {
+                    resetButton.classList.remove('is-resetting');
+                    resetButton.textContent = 'Reset Form';
+                    resetButton.disabled = false;
+                }, 1500);
+            });
+
+            printButton.addEventListener('click', function() {
+                prepareForPrint();
+                window.print();
+            });
+
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    hideAllSections();
+                    if (this.checked && conditionalSections[this.value]) {
+                        showSection(this.value);
+                    }
+                });
+            });
+
+            amountInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (!isNaN(value)) {
+                    this.type = 'text';
+                    this.value = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(value);
                 }
             });
 
+            amountInput.addEventListener('focus', function() {
+                if(this.value.includes('$')) {
+                    const unformattedValue = this.value.replace(/[^0-9.-]+/g, "");
+                    this.type = 'number';
+                    this.value = unformattedValue;
+                }
+            });
+
+            document.getElementById('send_to').addEventListener('change', function() {
+                const otherField = document.getElementById('send_to_other');
+                otherField.style.display = this.value === 'other' ? 'block' : 'none';
+                otherField.required = this.value === 'other';
+            });
+
+            // File upload listeners
+            fileUploadArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('click', (e) => e.stopPropagation());
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 fileUploadArea.addEventListener(eventName, e => { e.preventDefault(); e.stopPropagation(); });
             });
-            ['dragenter', 'dragover'].forEach(eventName => {
-                fileUploadArea.addEventListener(eventName, () => fileUploadArea.style.borderColor = 'green');
-            });
-            ['dragleave', 'drop'].forEach(eventName => {
-                fileUploadArea.addEventListener(eventName, () => fileUploadArea.style.borderColor = '#667eea');
-            });
-            
+            ['dragenter', 'dragover'].forEach(eventName => fileUploadArea.addEventListener(eventName, () => fileUploadArea.classList.add('dragover')));
+            ['dragleave', 'drop'].forEach(eventName => fileUploadArea.addEventListener(eventName, () => fileUploadArea.classList.remove('dragover')));
             fileUploadArea.addEventListener('drop', (e) => handleFiles(e.dataTransfer.files));
             fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+            // --- INITIALIZATION ---
+            document.getElementById('date').valueAsDate = new Date();
+            setupConditionalContainer('goodsSoldCheck', 'goods_sold_details_container');
+            setupConditionalContainer('debtIncurredCheck', 'debt_incurred_details_container');
+            setupConditionalContainer('claimOtherCheck', 'claim_other_details_container');
+            setupConditionalContainer('actionOtherCheck', 'action_other_details_container');
+            setupConditionalContainer('guaranteeCheck', 'guarantee_details_container');
+            setupConditionalContainer('invoiceCheck', 'invoice_details_container');
+            setupConditionalContainer('applicationCheck', 'application_details_container');
+            setupConditionalContainer('docOtherCheck', 'doc_other_details_container');
+            setupConditionalContainer('registerCaveatCheck', 'register_caveat_details_container');
+            setupConditionalContainer('issueSummonsCheck', 'issue_summons_details_container');
+            
+            // Initial state for debtor sections
+            hideAllSections();
+            const checkedRadio = document.querySelector('input[name="debtor_type"]:checked');
+            if (checkedRadio && conditionalSections[checkedRadio.value]) {
+                showSection(checkedRadio.value);
+            }
+
+            forceResetAppearance();
         });
     </script>
     <script>
-    document.querySelector('form[name="galvins-form"]').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      fetch('/.netlify/functions/submission-created', {
-        method: 'POST',
-        body: formData
-      }).then(res => {
-        if (res.redirected) {
-          window.location.href = res.url;
-        } else if (res.status === 302) {
-          window.location.href = '/success.html';
-        } else {
-          window.location.href = '/error.html';
-        }
-      }).catch(() => {
-        window.location.href = '/error.html';
-      });
-    });
+        document.querySelector('form[name="galvins-form"]').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            fetch('/.netlify/functions/submission-created', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => {
+                if (res.redirected) {
+                    window.location.href = res.url;
+                } else if (res.status === 302) {
+                    window.location.href = '/success.html';
+                } else {
+                    window.location.href = '/error.html';
+                }
+            })
+            .catch(() => {
+                window.location.href = '/error.html';
+            });
+        });
     </script>
 </body>
 </html>
