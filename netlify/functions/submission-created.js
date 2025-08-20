@@ -91,28 +91,34 @@ exports.handler = async (event) => {
       }
     });
 
-    // Determine recipient (from form or default)
-    const recipient = filteredData['send_to'] || 'greg@mettams.com.au'; // Adjust based on your form field
+ // Determine recipient (from form or default)
+const recipient = filteredData['send_to'] || 'greg@mettams.com.au'; // Adjust based on your form field
 
-    const msg = {
-      to: recipient,
-      from: 'greg@mettams.com.au', // Verified sender
-      subject: 'New Instruction Sheet Submission',
-      html: htmlBody,
-      attachments: attachments.length > 0 ? attachments : undefined
-    };
+const msg = {
+  to: recipient,
+  from: 'greg@mettams.com.au', // Verified sender
+  subject: 'New Instruction Sheet Submission',
+  html: htmlBody,
+  attachments: attachments.length > 0 ? attachments : undefined
+};
 
-    await sgMail.send(msg);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({ message: 'Email sent successfully' })
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to process form and send email' })
-    };
-  }
+try {
+  await sgMail.send(msg);
+  return {
+    statusCode: 302,
+    headers: {
+      Location: '/success.html' // update to your actual success page path
+    },
+    body: ''
+  };
+} catch (error) {
+  console.error(error);
+  return {
+    statusCode: 302,
+    headers: {
+      Location: '/error.html' // update to your actual error page path
+    },
+    body: ''
+  };
+}
 };
