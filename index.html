@@ -717,17 +717,17 @@
                         <h3 class="conditional-title">Sole Proprietor Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_full_name" name="sp_full_name" type="text" required/>
+                                <input id="sp_full_name" name="sp_full_name" type="text" />
                                 <label for="sp_full_name"><span class="label-main">Full Name *</span><span class="label-prompt">Enter Full Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
-                                <input id="sp_mobile" name="sp_mobile" type="tel" required/>
+                                <input id="sp_mobile" name="sp_mobile" type="tel" />
                                 <label for="sp_mobile"><span class="label-main">Mobile Phone *</span><span class="label-prompt">Enter Mobile Number</span></label>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="sp_email" name="sp_email" type="email" required/>
+                                <input id="sp_email" name="sp_email" type="email" />
                                 <label for="sp_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
@@ -755,7 +755,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="p_email" name="p_email" type="email" required/>
+                                <input id="p_email" name="p_email" type="email" />
                                 <label for="p_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                              <div class="form-group form-group-float">
@@ -777,7 +777,7 @@
                         <h3 class="conditional-title">Company Information</h3>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_company_name" name="c_company_name" type="text" required/>
+                                <input id="c_company_name" name="c_company_name" type="text" />
                                 <label for="c_company_name"><span class="label-main">Company Name *</span><span class="label-prompt">Enter Company Name</span></label>
                             </div>
                             <div class="form-group form-group-float">
@@ -787,7 +787,7 @@
                         </div>
                         <div class="form-row">
                             <div class="form-group form-group-float">
-                                <input id="c_email" name="c_email" type="email" required/>
+                                <input id="c_email" name="c_email" type="email" />
                                 <label for="c_email"><span class="label-main">Email Address *</span><span class="label-prompt">Enter Email Address</span></label>
                             </div>
                             <div class="form-group form-group-float">
@@ -943,7 +943,7 @@
                     </div>
                     <div class="form-row signature-row">
                         <div class="form-group">
-                            <label for="signature">Signature *</label>
+                            <label for="signature">Type your name *</label>
                             <input id="signature" name="signature" required type="text"/>
                         </div>
                         <div class="form-group">
@@ -1263,6 +1263,80 @@
                 window.location.href = '/error.html';
             });
         });
+				
+		const radios = document.querySelectorAll('input[name="debtor_type"]');
+let lastSelected = null;
+		
+		
+document.addEventListener('DOMContentLoaded', function() {
+  // 1. Update the signature label text
+  const sigLabel = document.querySelector('label[for="signature"]');
+  if (sigLabel) sigLabel.textContent = "Type your name *";
+
+  // 2. Debtor type radio toggle on/off logic
+  const radios = document.querySelectorAll('input[name="debtor_type"]');
+  let lastSelected = null;
+  radios.forEach(radio => {
+    radio.addEventListener('click', function() {
+      if (lastSelected === radio) {
+        radio.checked = false;
+        lastSelected = null;
+        hideAllSections();
+      } else {
+        lastSelected = radio;
+        hideAllSections();
+        showSection(radio.value);
+      }
+    });
+  });
+
+  // 3. Form submit handler
+  const form = document.querySelector('form[name="galvins-form"]');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    fetch('/.netlify/functions/submission-created', {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => {
+      if (res.redirected) {
+        window.location.href = res.url;
+      } else if (res.status === 302) {
+        window.location.href = '/success.html';
+      } else {
+        window.location.href = '/error.html';
+      }
+    })
+    .catch(() => {
+      window.location.href = '/error.html';
+    });
+  });
+
+  // 4. Helper functions -- define inside DOMContentLoaded if they need access to above variables
+  function hideAllSections() {
+    Object.values(conditionalSections).forEach(section => {
+      if (section) {
+        section.style.display = 'none';
+        section.querySelectorAll('input, textarea, select').forEach(el => el.required = false);
+      }
+    });
+  }
+  function showSection(key) {
+    const section = conditionalSections[key];
+    if (section) {
+      section.style.display = 'block';
+      section.querySelectorAll('input, textarea, select').forEach(el => {
+        let labels = el.labels;
+        if (labels && Array.from(labels).some(lbl => lbl.textContent.includes('*'))) {
+          el.required = true;
+        }
+      });
+    }
+  }
+  // ... any other setup code here ...
+});
+	
     </script>
 </body>
 </html>
