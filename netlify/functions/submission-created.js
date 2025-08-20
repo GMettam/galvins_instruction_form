@@ -26,15 +26,20 @@ exports.handler = async (event) => {
       });
     });
 
-    // Filter empty fields and format data (adapt your original logic)
+    // Filter empty fields and format data
     const filteredData = {};
     Object.keys(fields).forEach(key => {
       let value = fields[key];
       if (value && value.trim().length > 0) {
-        // Handle dates if needed
+        // Handle dates if needed (FIXED: Use === for comparison)
         if (key === 'date' || key === 'debt_incurred_date') {
-          const [year, month, day] = value.split('-');
-          filteredData[key] = `${day}/${month}/${year}`;
+          const dateParts = value.split('-');
+          if (dateParts.length === 3) { // Basic validation
+            const [year, month, day] = dateParts;
+            filteredData[key] = `${day}/${month}/${year}`;
+          } else {
+            filteredData[key] = value; // Fallback if invalid
+          }
         } else if (Array.isArray(value)) {
           filteredData[key] = value.join(', ');
         } else {
@@ -87,38 +92,40 @@ exports.handler = async (event) => {
             type: f.mimetype,
             disposition: 'attachment'
           });
+          // Clean up temp file
+          fs.unlinkSync(f.filepath);
         });
       }
     });
 
- // Determine recipient (from form or default)
-const recipient = filteredData['send_to'] || 'greg@mettams.com.au'; // Adjust based on your form field
+    // Determine recipient (from form or default)
+    const recipient = filteredData['send_to'] || 'greg@mettams.com.au'; // Adjust based on your form field
 
-const msg = {
-  to: recipient,
-  from: 'greg@mettams.com.au', // Verified sender
-  subject: 'New Instruction Sheet Submission',
-  html: htmlBody,
-  attachments: attachments.length > 0 ? attachments : undefined
-};
+    const msg = {
+      to: recipient,
+      from: 'greg@mettams.com.au', // Verified sender
+      subject: 'New Instruction Sheet Submission',
+      html: htmlBody,
+      attachments: attachments.length > 0 ? attachments : undefined
+    };
 
-try {
-  await sgMail.send(msg);
-  return {
-    statusCode: 302,
-    headers: {
-      Location: '/success.html' // update to your actual success page path
-    },
-    body: ''
-  };
-} catch (error) {
-  console.error(error);
-  return {
-    statusCode: 302,
-    headers: {
-      Location: '/error.html' // update to your actual error page path
-    },
-    body: ''
-  };
-}
+    await sgMail.send(msg);
+
+    return {
+      statusCode: 302,
+      headers: {
+        Location: '/success.html' // Update if your success page is different
+      },
+      body: ''
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 302,
+      headers: {
+        Location: '/error.html' // Update if your error page is different
+      },
+      body: ''
+    };
+  }
 };
