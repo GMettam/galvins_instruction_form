@@ -7,18 +7,18 @@ exports.handler = async (event) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
   try {
-    // Decode the base64-encoded body from Netlify event
+    // Decode the body (Netlify functions always base64-encode the body)
     const bodyBuffer = Buffer.from(event.body, 'base64');
 
-    // Create a readable stream from the buffer to emulate HTTP request for Formidable
+    // Create a mock request stream for formidable
     const mockReq = new Readable();
     mockReq.push(bodyBuffer);
-    mockReq.push(null); // End the stream
+    mockReq.push(null);
     mockReq.headers = event.headers;
     mockReq.method = event.httpMethod;
 
+    // Parse the form data
     const form = new formidable.IncomingForm({ multiples: true });
-
     const [fields, files] = await new Promise((resolve, reject) => {
       form.parse(mockReq, (err, fields, files) => {
         if (err) reject(err);
@@ -26,19 +26,18 @@ exports.handler = async (event) => {
       });
     });
 
-    // Filter empty fields and format data
+    // Filter and format fields (fixing the date comparison)
     const filteredData = {};
     Object.keys(fields).forEach(key => {
       let value = fields[key];
       if (value && value.trim().length > 0) {
-        // Handle dates if needed (FIXED: Use === for comparison)
-        if (key === 'date' || key === 'debt_incurred_date') {
+        if (key === 'date' || key === 'debt_incurred_date') {  // Fixed comparison
           const dateParts = value.split('-');
-          if (dateParts.length === 3) { // Basic validation
+          if (dateParts.length === 3) {
             const [year, month, day] = dateParts;
             filteredData[key] = `${day}/${month}/${year}`;
           } else {
-            filteredData[key] = value; // Fallback if invalid
+            filteredData[key] = value;  // Fallback
           }
         } else if (Array.isArray(value)) {
           filteredData[key] = value.join(', ');
@@ -48,7 +47,7 @@ exports.handler = async (event) => {
       }
     });
 
-    // Build HTML table for email body
+    // Build HTML table rows
     let tableRows = '';
     Object.entries(filteredData).forEach(([key, value]) => {
       tableRows += `
@@ -62,7 +61,7 @@ exports.handler = async (event) => {
     const htmlBody = `
       <html>
         <body>
-          <h2>New Form Submission</h2>
+          <h2>New Instruction Sheet Submission</h2>
           <p>A new instruction sheet has been submitted.</p>
           <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
             <thead>
@@ -79,7 +78,7 @@ exports.handler = async (event) => {
       </html>
     `;
 
-    // Prepare attachments for SendGrid
+    // Prepare attachments
     const attachments = [];
     Object.values(files).forEach(file => {
       if (file) {
@@ -92,18 +91,16 @@ exports.handler = async (event) => {
             type: f.mimetype,
             disposition: 'attachment'
           });
-          // Clean up temp file
-          fs.unlinkSync(f.filepath);
+          fs.unlinkSync(f.filepath);  // Clean up temp file
         });
       }
     });
 
-    // Determine recipient (from form or default)
-    const recipient = filteredData['send_to'] || 'greg@mettams.com.au'; // Adjust based on your form field
-
+    // Determine recipient and use env variable for sender
+    const recipient = filteredData['send_to'] || 'greg@mettams.com.au';
     const msg = {
       to: recipient,
-      from: 'greg@mettams.com.au', // Verified sender
+      from: process.env.SENDGRID_SENDER_EMAIL,  // Use env variable (required for SendGrid)
       subject: 'New Instruction Sheet Submission',
       html: htmlBody,
       attachments: attachments.length > 0 ? attachments : undefined
@@ -114,16 +111,20 @@ exports.handler = async (event) => {
     return {
       statusCode: 302,
       headers: {
-        Location: '/success.html' // Update if your success page is different
+        Location: '/success.html'  // Adjust if needed
       },
       body: ''
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error in function:', error);  // Improved logging for debugging
+    if (error.response) {
+      console.error('SendGrid response:', error.response.body);  // Log SendGrid-specific errors
+    }
+
     return {
       statusCode: 302,
       headers: {
-        Location: '/error.html' // Update if your error page is different
+        Location: '/error.html'  // Adjust if needed
       },
       body: ''
     };
