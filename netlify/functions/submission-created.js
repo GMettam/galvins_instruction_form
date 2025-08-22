@@ -31,68 +31,26 @@ exports.handler = async (event) => {
       throw new Error('No form data received');
     }
 
-    // Handle different content types
-    let formData = {};
-    const contentType = event.headers['content-type'] || '';
+    // Parse URL-encoded data
+    const bodyData = event.isBase64Encoded ? 
+      Buffer.from(event.body, 'base64').toString() : 
+      event.body;
     
-    if (contentType.includes('application/x-www-form-urlencoded')) {
-      console.log('Processing URL-encoded data');
-      const bodyData = event.isBase64Encoded ? 
-        Buffer.from(event.body, 'base64').toString() : 
-        event.body;
-      
-      const parsed = querystring.parse(bodyData);
-      
-      // Convert querystring format to our format
-      Object.keys(parsed).forEach(key => {
-        const value = parsed[key];
-        if (Array.isArray(value)) {
-          formData[key] = value.join(', ');
-        } else {
-          formData[key] = value;
-        }
-      });
-      
-    } else if (contentType.includes('multipart/form-data')) {
-      // For multipart data, we'll extract fields manually (simplified approach)
-      console.log('Processing multipart data (simplified)');
-      const bodyData = event.isBase64Encoded ? 
-        Buffer.from(event.body, 'base64').toString() : 
-        event.body;
-      
-      // Simple field extraction for multipart (won't handle files, but will handle form fields)
-      const fields = bodyData.split('Content-Disposition: form-data; name=');
-      
-      fields.forEach(field => {
-        if (field.includes('"') && field.includes('\r\n\r\n')) {
-          const nameMatch = field.match(/"([^"]+)"/);
-          const valueMatch = field.split('\r\n\r\n')[1];
-          
-          if (nameMatch && valueMatch) {
-            const name = nameMatch[1];
-            const value = valueMatch.split('\r\n')[0].trim();
-            
-            if (name && value) {
-              if (formData[name]) {
-                formData[name] = Array.isArray(formData[name]) ? 
-                  [...formData[name], value] : [formData[name], value];
-              } else {
-                formData[name] = value;
-              }
-            }
-          }
-        }
-      });
-      
-      // Convert arrays to comma-separated strings
-      Object.keys(formData).forEach(key => {
-        if (Array.isArray(formData[key])) {
-          formData[key] = formData[key].join(', ');
-        }
-      });
-    }
+    console.log('Body data received, length:', bodyData.length);
+    
+    const parsed = querystring.parse(bodyData);
+    console.log('Parsed data keys:', Object.keys(parsed));
 
-    console.log('Form data processed, keys:', Object.keys(formData));
+    // Convert parsed data to clean format
+    const formData = {};
+    Object.keys(parsed).forEach(key => {
+      const value = parsed[key];
+      if (Array.isArray(value)) {
+        formData[key] = value.join(', ');
+      } else if (value) {
+        formData[key] = value.toString();
+      }
+    });
 
     // Check honeypot
     if (formData['bot-field'] && formData['bot-field'].trim() !== '') {
@@ -136,22 +94,29 @@ exports.handler = async (event) => {
       'account_no': 'Account Number',
       'debtor_type': 'Debtor Type',
       'send_to': 'Send To',
+      'send_to_other': 'Send To (Other)',
       'signature': 'Signature',
       'date': 'Date Signed',
       'comments': 'Comments',
       'sp_full_name': 'Full Name (Sole Proprietor)',
       'sp_mobile': 'Mobile (Sole Proprietor)',
       'sp_email': 'Email (Sole Proprietor)',
+      'sp_acn_abn': 'ACN/ABN (Sole Proprietor)',
+      'sp_home_address': 'Home Address (Sole Proprietor)',
       'c_company_name': 'Company Name',
       'action': 'Actions Required',
-      'document_type': 'Required Documents'
+      'document_type': 'Required Documents',
+      'goods_sold_details': 'Goods Sold Details',
+      'debt_incurred_details': 'Debt Incurred Details',
+      'demand_letter_details': 'Demand Letter Details',
+      'demand_letter_days': 'Demand Letter Days'
     };
 
-    // Build email content
+    // Build email content table
     let tableRows = '';
     Object.entries(cleanData).forEach(([key, value]) => {
       const displayName = fieldNameMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      const displayValue = value.length > 150 ? value.substring(0, 150) + '...' : value;
+      const displayValue = value.length > 200 ? value.substring(0, 200) + '...' : value;
       
       tableRows += `
         <tr>
@@ -173,14 +138,17 @@ exports.handler = async (event) => {
           <style>
             body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.4; }
             table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-            .header { background-color: #667eea; color: white; padding: 15px; margin-bottom: 20px; }
+            .header { background-color: #667eea; color: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+            th, td { text-align: left; }
           </style>
         </head>
         <body>
           <div class="header">
-            <h1>Galvins - New Instruction Sheet</h1>
-            <p>Submitted: ${new Date().toLocaleString('en-AU')}</p>
+            <h1>Galvins - New Instruction Sheet Submission</h1>
+            <p>Submitted: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}</p>
           </div>
+          
+          <h2>Form Details</h2>
           <table>
             <thead>
               <tr>
@@ -188,10 +156,13 @@ exports.handler = async (event) => {
                 <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Value</th>
               </tr>
             </thead>
-            <tbody>${tableRows}</tbody>
+            <tbody>
+              ${tableRows}
+            </tbody>
           </table>
-          <p style="margin-top: 20px; font-style: italic; color: #666;">
-            Note: File attachments are not supported in this simplified version.
+          
+          <p style="margin-top: 20px; font-style: italic; color: #666; font-size: 12px;">
+            This form submission was processed automatically by the Galvins instruction form system.
           </p>
         </body>
       </html>
@@ -212,7 +183,7 @@ exports.handler = async (event) => {
         email: process.env.SENDGRID_SENDER_EMAIL,
         name: 'Galvins Instruction Form'
       },
-      subject: `New Instruction Sheet - ${cleanData['signature'] || 'Unknown'}`,
+      subject: `New Instruction Sheet - ${cleanData['signature'] || 'Unknown Client'}`,
       html: htmlBody
     };
 
@@ -231,18 +202,23 @@ exports.handler = async (event) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Submission Successful</title>
             <style>
-              body { font-family: Arial, sans-serif; margin: 0; padding: 40px; background: #667eea; }
-              .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; text-align: center; }
+              body { font-family: Arial, sans-serif; margin: 0; padding: 40px; background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; }
+              .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
               .success-icon { font-size: 4em; color: #28a745; margin-bottom: 20px; }
-              .btn { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+              .btn { display: inline-block; background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; margin-top: 20px; transition: transform 0.2s; }
+              .btn:hover { transform: translateY(-2px); }
+              .recipient { background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0; }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="success-icon">✓</div>
-              <h1>Submission Successful!</h1>
-              <p>Your instruction sheet has been submitted and sent to <strong>${recipient}</strong>.</p>
-              <p><em>Note: File attachments are not included in this version.</em></p>
+              <h1>Instruction Sheet Submitted Successfully!</h1>
+              <p>Your instruction sheet has been processed and sent via email.</p>
+              <div class="recipient">
+                <strong>Sent to:</strong> ${recipient}
+              </div>
+              <p>You should receive a confirmation or response shortly.</p>
               <a href="/" class="btn">Submit Another Form</a>
             </div>
           </body>
@@ -266,18 +242,19 @@ exports.handler = async (event) => {
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Submission Error</title>
             <style>
-              body { font-family: Arial, sans-serif; margin: 0; padding: 40px; background: #667eea; }
-              .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; text-align: center; }
+              body { font-family: Arial, sans-serif; margin: 0; padding: 40px; background: #dc3545; min-height: 100vh; }
+              .container { max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; text-align: center; }
               .error-icon { font-size: 4em; color: #dc3545; margin-bottom: 20px; }
-              .btn { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+              .btn { display: inline-block; background: #667eea; color: white; padding: 15px 30px; text-decoration: none; border-radius: 25px; margin-top: 20px; }
             </style>
           </head>
           <body>
             <div class="container">
               <div class="error-icon">⚠</div>
               <h1>Submission Error</h1>
-              <p>Error: ${error.message}</p>
-              <p>Please try again or contact support.</p>
+              <p>There was an error processing your form submission.</p>
+              <p><strong>Error:</strong> ${error.message}</p>
+              <p>Please try again or contact support if the problem persists.</p>
               <a href="/" class="btn">Go Back to Form</a>
             </div>
           </body>
