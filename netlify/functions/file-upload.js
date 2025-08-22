@@ -47,11 +47,19 @@ exports.handler = async (event) => {
         });
       });
       
-      // Process fields
+      // Process fields with date formatting
       Object.keys(fields).forEach(key => {
         if (key !== 'bot-field' && fields[key]) {
           const value = fields[key];
-          formData[key] = Array.isArray(value) ? value.join(', ') : value.toString();
+          let processedValue = Array.isArray(value) ? value.join(', ') : value.toString();
+          
+          // Convert dates from yyyy-mm-dd to dd/mm/yyyy
+          if ((key === 'date' || key === 'debt_incurred_date') && processedValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = processedValue.split('-');
+            processedValue = `${day}/${month}/${year}`;
+          }
+          
+          formData[key] = processedValue;
         }
       });
       
@@ -92,7 +100,15 @@ exports.handler = async (event) => {
       
       Object.keys(parsed).forEach(key => {
         if (key !== 'bot-field' && parsed[key]) {
-          formData[key] = Array.isArray(parsed[key]) ? parsed[key].join(', ') : parsed[key].toString();
+          let value = Array.isArray(parsed[key]) ? parsed[key].join(', ') : parsed[key].toString();
+          
+          // Convert dates from yyyy-mm-dd to dd/mm/yyyy
+          if ((key === 'date' || key === 'debt_incurred_date') && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            const [year, month, day] = value.split('-');
+            value = `${day}/${month}/${year}`;
+          }
+          
+          formData[key] = value;
         }
       });
     }
