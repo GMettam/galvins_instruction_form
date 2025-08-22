@@ -1,6 +1,5 @@
 const sgMail = require('@sendgrid/mail');
 const formidable = require('formidable');
-const fs = require('fs');
 const { Readable } = require('stream');
 
 exports.handler = async (event) => {
@@ -18,31 +17,16 @@ exports.handler = async (event) => {
     };
   }
 
-  // Check if required environment variables exist
-  if (!process.env.SENDGRID_API_KEY) {
-    console.error('SENDGRID_API_KEY environment variable is missing');
+  // Check environment variables
+  if (!process.env.SENDGRID_API_KEY || !process.env.SENDGRID_SENDER_EMAIL) {
+    console.error('Missing environment variables');
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'text/html' },
       body: `
         <html><body>
           <h1>Configuration Error</h1>
-          <p>SendGrid API key not configured. Please contact the administrator.</p>
-          <p><a href="/">Go back to form</a></p>
-        </body></html>
-      `
-    };
-  }
-
-  if (!process.env.SENDGRID_SENDER_EMAIL) {
-    console.error('SENDGRID_SENDER_EMAIL environment variable is missing');
-    return {
-      statusCode: 500,
-      headers: { 'Content-Type': 'text/html' },
-      body: `
-        <html><body>
-          <h1>Configuration Error</h1>
-          <p>SendGrid sender email not configured. Please contact the administrator.</p>
+          <p>Email service not configured. Please contact administrator.</p>
           <p><a href="/">Go back to form</a></p>
         </body></html>
       `
@@ -54,7 +38,11 @@ exports.handler = async (event) => {
   try {
     console.log('Starting form parsing...');
     
-    // Handle the body properly - check if it's already a buffer or needs decoding
+    if (!event.body) {
+      throw new Error('No form data received');
+    }
+
+    // Handle the body properly
     let bodyBuffer;
     if (event.isBase64Encoded) {
       bodyBuffer = Buffer.from(event.body, 'base64');
@@ -63,28 +51,30 @@ exports.handler = async (event) => {
     }
     
     console.log('Body buffer length:', bodyBuffer.length);
-    console.log('First 100 chars of body:', bodyBuffer.toString().substring(0, 100));
 
-    // Create a mock request stream for formidable
+    // Create readable stream for formidable
     const mockReq = new Readable();
     mockReq.push(bodyBuffer);
     mockReq.push(null);
     
-    // Ensure proper headers for formidable
     mockReq.headers = {
       'content-type': event.headers['content-type'] || event.headers['Content-Type'],
       'content-length': bodyBuffer.length.toString()
     };
     mockReq.method = event.httpMethod;
 
-    // Parse the form data with better options
-    const form = new formidable.IncomingForm({ 
+    // Updated for formidable v3 - different API
+    const form = formidable({
       multiples: true,
       keepExtensions: true,
-      maxFileSize: 10 * 1024 * 1024 // 10MB limit
+      maxFileSize: 5 * 1024 * 1024, // 5MB
+      maxTotalFileSize: 10 * 1024 * 1024, // 10MB total
+      maxFields: 100,
+      maxFieldsSize: 2 * 1024 * 1024 // 2MB for field data
     });
-    
-    const [fields, files] = await new Promise((resolve, reject) => {
+
+    // Parse with timeout for formidable v3
+    const parsePromise = new Promise((resolve, reject) => {
       form.parse(mockReq, (err, fields, files) => {
         if (err) {
           console.error('Form parsing error:', err);
@@ -98,7 +88,13 @@ exports.handler = async (event) => {
       });
     });
 
-    // Check for honeypot (spam protection)
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Form parsing timeout')), 25000);
+    });
+
+    const [fields, files] = await Promise.race([parsePromise, timeoutPromise]);
+
+    // Check for honeypot
     if (fields['bot-field'] && fields['bot-field'].toString().trim() !== '') {
       console.log('Honeypot triggered - likely spam');
       return {
@@ -114,24 +110,24 @@ exports.handler = async (event) => {
       };
     }
 
-    // Helper function to get field value (handle arrays and single values)
+    // Helper function for formidable v3 field handling
     const getFieldValue = (field) => {
       if (!field) return '';
       if (Array.isArray(field)) {
-        return field.join(', ');
+        return field.map(f => typeof f === 'object' && f.value !== undefined ? f.value : f.toString()).join(', ');
       }
-      return field.toString();
+      return typeof field === 'object' && field.value !== undefined ? field.value : field.toString();
     };
 
-    // Filter and format fields
+    // Process fields
     const filteredData = {};
     Object.keys(fields).forEach(key => {
-      if (key === 'bot-field') return; // Skip honeypot field
+      if (key === 'bot-field') return;
       
       const value = getFieldValue(fields[key]);
       if (value && value.trim().length > 0) {
+        // Handle date formatting
         if (key === 'date' || key === 'debt_incurred_date') {
-          // Convert YYYY-MM-DD to DD/MM/YYYY
           const dateParts = value.split('-');
           if (dateParts.length === 3) {
             const [year, month, day] = dateParts;
@@ -140,14 +136,14 @@ exports.handler = async (event) => {
             filteredData[key] = value;
           }
         } else {
-          filteredData[key] = value;
+          filteredData[key] = value.substring(0, 1000); // Limit field length
         }
       }
     });
 
     console.log('Filtered data keys:', Object.keys(filteredData));
 
-    // Create a more readable field name mapping
+    // Field name mapping for better readability
     const fieldNameMap = {
       'amount': 'Claim Amount',
       'claim_type': 'Claim Type',
@@ -157,22 +153,27 @@ exports.handler = async (event) => {
       'send_to': 'Send To',
       'signature': 'Signature',
       'date': 'Date Signed',
-      'comments': 'Comments'
-      // Add more mappings as needed
+      'comments': 'Comments',
+      'sp_full_name': 'Full Name (Sole Proprietor)',
+      'sp_mobile': 'Mobile (Sole Proprietor)',
+      'sp_email': 'Email (Sole Proprietor)',
+      'c_company_name': 'Company Name',
+      'action': 'Actions Required',
+      'document_type': 'Required Documents'
     };
 
-    // Build HTML table rows with better formatting
+    // Build email content
     let tableRows = '';
     Object.entries(filteredData).forEach(([key, value]) => {
       const displayName = fieldNameMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-      const displayValue = value.length > 100 ? value.substring(0, 100) + '...' : value;
+      const displayValue = value.length > 150 ? value.substring(0, 150) + '...' : value;
       
       tableRows += `
         <tr>
-          <td style="border: 1px solid #ddd; padding: 12px; font-weight: bold; background-color: #f9f9f9; width: 200px; vertical-align: top;">
+          <td style="border: 1px solid #ddd; padding: 8px; font-weight: bold; background-color: #f9f9f9; width: 200px; vertical-align: top;">
             ${displayName}
           </td>
-          <td style="border: 1px solid #ddd; padding: 12px; word-wrap: break-word;">
+          <td style="border: 1px solid #ddd; padding: 8px; word-wrap: break-word;">
             ${displayValue.replace(/\n/g, '<br>')}
           </td>
         </tr>
@@ -185,43 +186,40 @@ exports.handler = async (event) => {
         <head>
           <meta charset="utf-8">
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
+            body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.4; }
             table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-            th, td { text-align: left; }
-            .header { background-color: #667eea; color: white; padding: 20px; margin-bottom: 20px; }
+            .header { background-color: #667eea; color: white; padding: 15px; margin-bottom: 20px; }
           </style>
         </head>
         <body>
           <div class="header">
-            <h1>Galvins - New Instruction Sheet Submission</h1>
-            <p>Submitted on: ${new Date().toLocaleString('en-AU')}</p>
+            <h1>Galvins - New Instruction Sheet</h1>
+            <p>Submitted: ${new Date().toLocaleString('en-AU')}</p>
           </div>
-          
-          <h2>Submission Details</h2>
           <table>
             <thead>
               <tr>
-                <th style="border: 1px solid #ddd; padding: 12px; background-color: #f2f2f2;">Field</th>
-                <th style="border: 1px solid #ddd; padding: 12px; background-color: #f2f2f2;">Value</th>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Field</th>
+                <th style="border: 1px solid #ddd; padding: 8px; background-color: #f2f2f2;">Value</th>
               </tr>
             </thead>
-            <tbody>
-              ${tableRows}
-            </tbody>
+            <tbody>${tableRows}</tbody>
           </table>
         </body>
       </html>
     `;
 
-    // Prepare attachments
+    // Handle file attachments with updated formidable v3 API
     console.log('Processing attachments...');
     const attachments = [];
+    const fs = require('fs');
     
     if (files && Object.keys(files).length > 0) {
       Object.entries(files).forEach(([fieldName, file]) => {
         if (file) {
           const fileArray = Array.isArray(file) ? file : [file];
           fileArray.forEach(f => {
+            // Updated for formidable v3 - filepath property
             if (f.filepath && f.originalFilename) {
               try {
                 const content = fs.readFileSync(f.filepath).toString('base64');
@@ -231,7 +229,7 @@ exports.handler = async (event) => {
                   type: f.mimetype || 'application/octet-stream',
                   disposition: 'attachment'
                 });
-                console.log(`Attached file: ${f.originalFilename} (${f.mimetype})`);
+                console.log(`Attached file: ${f.originalFilename}`);
                 
                 // Clean up temp file
                 fs.unlinkSync(f.filepath);
@@ -253,30 +251,26 @@ exports.handler = async (event) => {
     }
     
     console.log('Sending email to:', recipient);
-    console.log('Sending email from:', process.env.SENDGRID_SENDER_EMAIL);
 
-    // Prepare email
+    // Prepare and send email
     const msg = {
       to: recipient,
       from: {
         email: process.env.SENDGRID_SENDER_EMAIL,
         name: 'Galvins Instruction Form'
       },
-      subject: `New Instruction Sheet Submission - ${filteredData['signature'] || 'Unknown'}`,
+      subject: `New Instruction Sheet - ${filteredData['signature'] || 'Unknown'}`,
       html: htmlBody,
       attachments: attachments.length > 0 ? attachments : undefined
     };
 
-    console.log('Attempting to send email via SendGrid...');
+    console.log('Sending email via SendGrid...');
     const response = await sgMail.send(msg);
     console.log('Email sent successfully! Response:', response[0].statusCode);
 
-    // Success response
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'text/html'
-      },
+      headers: { 'Content-Type': 'text/html' },
       body: `
         <!DOCTYPE html>
         <html>
@@ -295,8 +289,8 @@ exports.handler = async (event) => {
             <div class="container">
               <div class="success-icon">✓</div>
               <h1>Submission Successful!</h1>
-              <p>Your instruction sheet has been submitted successfully and sent to <strong>${recipient}</strong>.</p>
-              <p>You should receive a confirmation shortly.</p>
+              <p>Your instruction sheet has been submitted and sent to <strong>${recipient}</strong>.</p>
+              ${attachments.length > 0 ? `<p>Included ${attachments.length} attachment(s).</p>` : ''}
               <a href="/" class="btn">Submit Another Form</a>
             </div>
           </body>
@@ -309,19 +303,14 @@ exports.handler = async (event) => {
     console.error('Error message:', error.message);
     console.error('Error stack:', error.stack);
     
-    // Log SendGrid specific errors
     if (error.response) {
       console.error('SendGrid response status:', error.response.status);
-      console.error('SendGrid response headers:', error.response.headers);
       console.error('SendGrid response body:', JSON.stringify(error.response.body, null, 2));
     }
 
-    // Return user-friendly error
     return {
       statusCode: 500,
-      headers: {
-        'Content-Type': 'text/html'
-      },
+      headers: { 'Content-Type': 'text/html' },
       body: `
         <!DOCTYPE html>
         <html>
@@ -340,8 +329,9 @@ exports.handler = async (event) => {
             <div class="container">
               <div class="error-icon">⚠</div>
               <h1>Submission Error</h1>
-              <p>There was an error processing your form submission. Please try again.</p>
-              <p>If the problem persists, please contact support.</p>
+              <p>There was an error processing your form submission.</p>
+              <p>Error: ${error.message}</p>
+              <p>Please try again or contact support if the problem persists.</p>
               <a href="/" class="btn">Go Back to Form</a>
             </div>
           </body>
