@@ -34,7 +34,7 @@ exports.handler = async (event) => {
         'content-length': bodyBuffer.length.toString()
       };
       
-      const form = formidable({
+      const form = new formidable.IncomingForm({
         multiples: true,
         keepExtensions: true,
         maxFileSize: 5 * 1024 * 1024 // 5MB limit
