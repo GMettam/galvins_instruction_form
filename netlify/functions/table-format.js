@@ -142,8 +142,14 @@ exports.handler = async (event) => {
     let tableRows = '';
     Object.entries(formData).forEach(([key, value]) => {
       if (value && value.trim()) {
-        const displayName = fieldNameMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-        const displayValue = value.length > 200 ? value.substring(0, 200) + '...' : value;
+        // Clean up field names - remove [] brackets and improve formatting
+        let displayName = fieldNameMap[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        displayName = displayName.replace(/\[\]/g, ''); // Remove [] brackets
+        
+        // Clean up values - replace underscores with spaces and format properly
+        let displayValue = value.length > 200 ? value.substring(0, 200) + '...' : value;
+        displayValue = displayValue.replace(/_/g, ' '); // Replace underscores with spaces
+        displayValue = displayValue.replace(/\b\w/g, l => l.toUpperCase()); // Capitalize words
         
         tableRows += `
           <tr>
