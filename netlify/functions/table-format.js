@@ -160,10 +160,11 @@ exports.handler = async (event) => {
         
         // Alternate row background colors
         const rowBgColor = rowIndex % 2 === 0 ? '#ffffff' : '#e9ecef';
+        const fieldBgColor = rowIndex % 2 === 0 ? '#f9f9f9' : '#dee2e6'; // Darker for alternating rows
         
         tableRows += `
           <tr style="background-color: ${rowBgColor};">
-            <td style="border: 1px solid #ccc; padding: 8px; font-weight: bold; background-color: #f9f9f9; width: 250px; vertical-align: top;">
+            <td style="border: 1px solid #ccc; padding: 8px; font-weight: bold; background-color: ${fieldBgColor}; width: 250px; vertical-align: top;">
               ${displayName}
             </td>
             <td style="border: 1px solid #ccc; padding: 8px; word-wrap: break-word;">
