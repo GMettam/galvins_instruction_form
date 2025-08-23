@@ -53,10 +53,10 @@ exports.handler = async (event) => {
           const value = fields[key];
           let processedValue = Array.isArray(value) ? value.join(', ') : value.toString();
           
-          // Convert dates from yyyy-mm-dd to dd/mm/yyyy
+          // Convert dates from yyyy-mm-dd to dd-mm-yyyy
           if ((key === 'date' || key === 'debt_incurred_date') && processedValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
             const [year, month, day] = processedValue.split('-');
-            processedValue = `${day}/${month}/${year}`;
+            processedValue = `${day}-${month}-${year}`;
           }
           
           formData[key] = processedValue;
@@ -102,10 +102,10 @@ exports.handler = async (event) => {
         if (key !== 'bot-field' && parsed[key]) {
           let value = Array.isArray(parsed[key]) ? parsed[key].join(', ') : parsed[key].toString();
           
-          // Convert dates from yyyy-mm-dd to dd/mm/yyyy
+          // Convert dates from yyyy-mm-dd to dd-mm-yyyy
           if ((key === 'date' || key === 'debt_incurred_date') && value.match(/^\d{4}-\d{2}-\d{2}$/)) {
             const [year, month, day] = value.split('-');
-            value = `${day}/${month}/${year}`;
+            value = `${day}-${month}-${year}`;
           }
           
           formData[key] = value;
@@ -140,6 +140,7 @@ exports.handler = async (event) => {
 
     // Build HTML email with table
     let tableRows = '';
+    let rowIndex = 0;
     Object.entries(formData).forEach(([key, value]) => {
       if (value && value.trim()) {
         // Clean up field names - remove [] brackets and improve formatting
@@ -149,10 +150,19 @@ exports.handler = async (event) => {
         // Clean up values - replace underscores with spaces and format properly
         let displayValue = value.length > 200 ? value.substring(0, 200) + '...' : value;
         displayValue = displayValue.replace(/_/g, ' '); // Replace underscores with spaces
-        displayValue = displayValue.replace(/\b\w/g, l => l.toUpperCase()); // Capitalize words
+        
+        // Special handling for email addresses - keep lowercase
+        if (key.includes('email') || (typeof displayValue === 'string' && displayValue.includes('@'))) {
+          displayValue = displayValue.toLowerCase();
+        } else {
+          displayValue = displayValue.replace(/\b\w/g, l => l.toUpperCase()); // Capitalize words
+        }
+        
+        // Alternate row background colors
+        const rowBgColor = rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa';
         
         tableRows += `
-          <tr>
+          <tr style="background-color: ${rowBgColor};">
             <td style="border: 1px solid #ccc; padding: 8px; font-weight: bold; background-color: #f9f9f9; width: 250px; vertical-align: top;">
               ${displayName}
             </td>
@@ -161,6 +171,7 @@ exports.handler = async (event) => {
             </td>
           </tr>
         `;
+        rowIndex++;
       }
     });
 
@@ -224,13 +235,55 @@ exports.handler = async (event) => {
       statusCode: 200,
       headers: { 'Content-Type': 'text/html' },
       body: `
+        <!DOCTYPE html>
         <html>
-          <body style="font-family: Arial; padding: 40px; text-align: center;">
-            <h1>Success!</h1>
-            <p>Form submitted to ${recipient}</p>
-            ${attachments.length > 0 ? `<p>${attachments.length} file(s) attached</p>` : ''}
-            <a href="/">Go back</a>
-          </body>
+        <head>
+            <meta charset="UTF-8">
+            <title>Form Submitted</title>
+            <style>
+                body { 
+                    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+                    text-align: center; 
+                    padding: 50px; 
+                    background: #f5f5f5; 
+                }
+                h1 { 
+                    color: #4CAF50;
+                    margin-bottom: 20px;
+                }
+                .container { 
+                    max-width: 600px; 
+                    margin: 0 auto; 
+                    background: white; 
+                    padding: 40px; 
+                    border-radius: 10px; 
+                    box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+                }
+                a {
+                    color: #667eea;
+                    text-decoration: none;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-top: 20px;
+                }
+                .info {
+                    margin-top: 15px;
+                    font-size: 14px;
+                    color: #666;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>&#10004; Submission Successful</h1>
+                <p>Thank you for your instructions. The legal team has received your form.</p>
+                <div class="info">
+                    <p>Sent to: ${recipient}</p>
+                    ${attachments.length > 0 ? `<p>${attachments.length} file(s) attached</p>` : ''}
+                </div>
+                <p><a href="/">&larr; Return to form</a></p>
+            </div>
+        </body>
         </html>
       `
     };
