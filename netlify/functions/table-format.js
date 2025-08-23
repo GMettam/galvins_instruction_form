@@ -159,7 +159,7 @@ exports.handler = async (event) => {
         }
         
         // Alternate row background colors
-        const rowBgColor = rowIndex % 2 === 0 ? '#ffffff' : '#f8f9fa';
+        const rowBgColor = rowIndex % 2 === 0 ? '#ffffff' : '#e9ecef';
         
         tableRows += `
           <tr style="background-color: ${rowBgColor};">
