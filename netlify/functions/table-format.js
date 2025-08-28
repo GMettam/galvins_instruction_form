@@ -219,13 +219,16 @@ exports.handler = async (event) => {
     if (recipient === 'other') recipient = 'greg@mettams.com.au';
     
     // Send email
-    const emailMessage = {
-      to: recipient,
-      from: process.env.SENDGRID_SENDER_EMAIL,
-      subject: `Instruction Sheet - ${formData.signature || 'Unknown'}`,
-      html: htmlContent
-    };
-    
+	  
+	  
+	  const emailMessage = {
+	  to: recipient,
+	  from: process.env.SENDGRID_SENDER_EMAIL, // Your verified email
+	  replyTo: 'jziatas@galvins.com.au', // Josephine's email
+	  subject: `Instruction Sheet - ${formData.signature || 'Unknown'}`,
+	  html: htmlContent
+	};
+	      
     if (attachments.length > 0) {
       emailMessage.attachments = attachments;
     }
