@@ -8,10 +8,12 @@ exports.handler = async (event) => {
   try {
     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
     
+    console.log('API Key exists:', !!process.env.SENDGRID_API_KEY);
+    console.log('Sender email:', process.env.SENDGRID_SENDER_EMAIL);
+    
     if (!event.body) {
       throw new Error('No form data received');
     }
-
     // Handle both URL-encoded and multipart data
     let formData = {};
     let attachments = [];
