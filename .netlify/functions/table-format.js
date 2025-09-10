@@ -189,7 +189,7 @@ exports.handler = async (event) => {
         </head>
         <body>
           <div class="header">
-            <h1>GALVINS - Instruction Sheet Submission</h1>
+            <h1>WA LIMESTONE - Instruction Sheet Submission</h1>
             <p>Submitted: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Perth' })}</p>
           </div>
           
@@ -208,7 +208,7 @@ exports.handler = async (event) => {
           ${attachments.length > 0 ? `<p style="margin-top: 20px;"><strong>Attachments:</strong> ${attachments.length} file(s) attached</p>` : ''}
           
           <p style="margin-top: 30px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 15px;">
-            This form submission was processed automatically by the Galvins instruction form system.
+            This form submission was processed automatically by the WA LIMESTONE instruction form system.
           </p>
         </body>
       </html>
@@ -224,8 +224,8 @@ exports.handler = async (event) => {
 	  const emailMessage = {
 	  to: recipient,
 	  from: process.env.SENDGRID_SENDER_EMAIL, // Your verified email
-	  replyTo: 'jziatas@galvins.com.au', // Josephine's email
-	  subject: `Instruction Sheet - ${formData.signature || 'Unknown'}`,
+	  replyTo: 'credit@walimestone.com', // Josephine's email
+	  subject: `WA Limestone Instruction Sheet - ${formData.signature || 'Unknown'}`,
 	  html: htmlContent
 	};
 	      
