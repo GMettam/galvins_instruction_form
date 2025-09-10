@@ -32,12 +32,14 @@ exports.handler = async (event) => {
         'content-length': bodyBuffer.length.toString()
       };
       
-      const form = new formidable.IncomingForm({
-        multiples: true,
-        keepExtensions: true,
-        maxFileSize: 5 * 1024 * 1024 // 5MB limit
-      });
-      
+	 const form = new formidable.IncomingForm({
+		  multiples: true,
+		  keepExtensions: true,
+		  maxFileSize: 5 * 1024 * 1024,
+		  allowEmptyFiles: true,
+		  minFileSize: 0
+		});
+		      
       const [fields, files] = await new Promise((resolve, reject) => {
         form.parse(mockReq, (err, fields, files) => {
           if (err) reject(err);
